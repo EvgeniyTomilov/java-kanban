@@ -1,6 +1,6 @@
 package ru.yandex.oop.tasktreker.model;
 
-public enum Status {
+public enum TaskType {
     NEW,
     IN_PROGRESS,
     DONE
