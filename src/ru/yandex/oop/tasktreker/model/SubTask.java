@@ -18,14 +18,16 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "SubTask{" +
+                "epicId=" + epicId +
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                "epicId=" + epicId +
+                ", taskType=" + taskType +
                 '}';
     }
+
     /*
     Для каждой подзадачи известно, в рамках какого эпика она выполняется.
     Завершение всех подзадач эпика считается завершением эпика.

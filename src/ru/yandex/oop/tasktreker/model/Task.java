@@ -2,7 +2,7 @@ package ru.yandex.oop.tasktreker.model;
 
 
 
-public abstract class Task {
+public  class Task {
     protected String name;
     protected int id;
     protected String description;
@@ -19,6 +19,7 @@ public abstract class Task {
                 ", id=" + id +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", taskType=" + taskType +
                 '}';
     }
 
@@ -77,7 +78,7 @@ public abstract class Task {
 
      У каждого типа задач есть идентификатор. Это целое число, уникальное для всех типов задач. По нему мы находим,
      обновляем, удаляем задачи. При создании задачи менеджер присваивает ей новый идентификатор.
-     ля генерации идентификаторов можно использовать числовое поле класса менеджер, увеличивая его на 1, когда нужно
+     Для генерации идентификаторов можно использовать числовое поле класса менеджер, увеличивая его на 1, когда нужно
       получить новое значение.
      */
 }
