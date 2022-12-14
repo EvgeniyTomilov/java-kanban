@@ -1,5 +1,8 @@
 package ru.yandex.oop.tasktreker.model;
 
+import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
+import ru.yandex.oop.tasktreker.model.enums.TaskType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +15,7 @@ public class EpicTask extends Task {
         this.description = description;
         this.taskType = taskType;
         subTasksId = new ArrayList<>();
-        this.status = Status.NEW;
+        this.taskStatus = TaskStatus.NEW;
     } // здесь что-то не то
 
     public List<Integer> getSubTaskIds() {
@@ -23,8 +26,8 @@ public class EpicTask extends Task {
         subTasksId.remove(subTaskId);
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public void addSubTaskId(int subTaskId) {
@@ -42,7 +45,7 @@ public class EpicTask extends Task {
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 ", description='" + description + '\'' +
-                ", status=" + status +
+                ", status=" + taskStatus +
                 ", taskType=" + taskType +
                 '}';
     }
