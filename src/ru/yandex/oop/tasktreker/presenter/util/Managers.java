@@ -23,7 +23,7 @@ public class Managers {
     public static void updateTask(int id, Task task, TaskManager manager) {  // этот метод умеет работать со всеми тасками, его надо заменить на утильный
         task.setId(id);
         manager.getHistoryManager().add(task);
-//        manager.addToHistoryList(task);
+
         if (task instanceof SubTask) {
             manager.getSubTaskMap().put(id, (SubTask) task);
             int epicIdOfSubtask = manager.getSubTaskMap().get(id).getEpicId();
@@ -43,8 +43,6 @@ public class Managers {
         }
     }
 }
-/*
-это утилитный класс
- */
+
 
 

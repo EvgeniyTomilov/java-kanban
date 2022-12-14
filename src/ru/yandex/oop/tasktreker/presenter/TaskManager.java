@@ -20,7 +20,7 @@ public interface TaskManager {
     Task getByIdAndTypeTask(int id, TaskType taskType);
     boolean deleteTasksByType(TaskType taskType);
     int createTaskAndReturnId(Task task);
-//    void updateTask(int id, Task task);
+
     boolean deleteByIdAndTypeTask(Integer id, TaskType taskType);
     List<SubTask> getListSubtask(int id);
     void changeStatus(int epicId);
@@ -30,5 +30,5 @@ public interface TaskManager {
     SubTask getSubtask(int id);
     EpicTask getEpic(int id);
 
-//    void addToHistoryList(Task task);
+
 }
