@@ -21,7 +21,7 @@ public class Main {
 
         System.out.println("---History---");
         manager.getHistoryManager().getHistory().forEach(System.out::println);
-//        manager.getHistoryTaskList().stream().forEach(System.out::println); // напечатать все таски из истории
+
         System.out.println("---History---");
 
         System.out.println(manager.getByIdAndTypeTask(0, TaskType.TASK));
@@ -76,7 +76,7 @@ public class Main {
         Task updateTask0 = new Task("Тренировка", "день грудь-плечи", TaskStatus.IN_PROGRESS, TaskType.TASK);
 
         Managers.updateTask(0, updateTask0, manager);
-//        manager.updateTask(0, updateTask0);
+
 
         System.out.println(manager.getByIdAndTypeTask(0, TaskType.TASK));
 
