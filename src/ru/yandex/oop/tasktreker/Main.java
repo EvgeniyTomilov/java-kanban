@@ -75,7 +75,7 @@ public class Main {
         System.out.println("**********************************UPDETEID(TASK)**********************************");
         Task updateTask0 = new Task("Тренировка", "день грудь-плечи", TaskStatus.IN_PROGRESS, TaskType.TASK);
 
-        Managers.updateTask(0, updateTask0, manager);
+        InMemoryTaskManager.updateTask(0, updateTask0, manager);
 
 
         System.out.println(manager.getByIdAndTypeTask(0, TaskType.TASK));
