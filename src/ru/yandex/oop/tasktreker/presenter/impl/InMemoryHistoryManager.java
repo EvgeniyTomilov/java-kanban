@@ -3,7 +3,7 @@ package ru.yandex.oop.tasktreker.presenter.impl;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 
-import java.util.ArrayList;
+
 import java.util.LinkedList;
 import java.util.List;
 

@@ -4,7 +4,6 @@ import ru.yandex.oop.tasktreker.model.*;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
-import ru.yandex.oop.tasktreker.presenter.util.Managers;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 
 public class Main {
