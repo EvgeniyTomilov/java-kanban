@@ -20,28 +20,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static void updateTask(int id, Task task, TaskManager manager) {  // этот метод умеет работать со всеми тасками, его надо заменить на утильный
-        task.setId(id);
-        manager.getHistoryManager().add(task);
 
-        if (task instanceof SubTask) {
-            manager.getSubTaskMap().put(id, (SubTask) task);
-            int epicIdOfSubtask = manager.getSubTaskMap().get(id).getEpicId();
-            manager.changeStatus(epicIdOfSubtask);
-        }
-        if (task instanceof EpicTask) {
-            for (Map.Entry<Integer, SubTask> subTask : manager.getSubTaskMap().entrySet()) {
-                int epicIdOfSubtask = subTask.getValue().getEpicId();
-                if (epicIdOfSubtask == id) {
-                    ((EpicTask) task).addSubTaskId(epicIdOfSubtask);
-                }
-            }
-            manager.getEpicTaskMap().put(id, (EpicTask) task);
-            manager.changeStatus(id);
-        } else {
-            manager.getTaskMap().put(id, task);
-        }
-    }
 }
 
 

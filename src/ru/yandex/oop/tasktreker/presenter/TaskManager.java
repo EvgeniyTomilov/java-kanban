@@ -20,6 +20,7 @@ public interface TaskManager {
     Task getByIdAndTypeTask(int id, TaskType taskType);
     boolean deleteTasksByType(TaskType taskType);
     int createTaskAndReturnId(Task task);
+//    void updateTask(int id, Task task, TaskManager manager);
 
     boolean deleteByIdAndTypeTask(Integer id, TaskType taskType);
     List<SubTask> getListSubtask(int id);

@@ -4,6 +4,7 @@ import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -11,7 +12,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private List<Task> historyTaskList;
 
     public InMemoryHistoryManager() {
-        this.historyTaskList = new ArrayList<>();
+        this.historyTaskList = new LinkedList<>();
     }
 
     @Override
