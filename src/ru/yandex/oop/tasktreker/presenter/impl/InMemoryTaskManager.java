@@ -34,14 +34,14 @@ public class InMemoryTaskManager implements TaskManager {
      * методы бизнес-логики
      */
     @Override
-    public Collection<? extends Task> getTaskByType(TaskType taskType) {
+    public Collection<? extends Task> getTaskByType(TaskType taskType) { //получить таску по типу (метод возвращает коллекцию, которая хранит в себе объекты которые являются наследником Task)
 
-        Collection<? extends Task> tempListTasks;
+        Collection<? extends Task> tempListTasks;//
         switch (taskType) {
             case TASK: {
-                if (!taskMap.isEmpty()) {
-                    tempListTasks = taskMap.values();
-                    return tempListTasks;
+                if (!taskMap.isEmpty()) {  // если карта не пустая
+                    tempListTasks = taskMap.values();  // то заполняем значениями из taskMap
+                    return tempListTasks;  //возвращаем новую коллекцию
                 } else {
                     return null;
                 }
@@ -67,13 +67,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getByIdAndTypeTask(int id, TaskType taskType) {
+    public Task getByIdAndTypeTask(int id, TaskType taskType) {// получить таску по id и по ее типу
         switch (taskType) {
             case TASK: {
-                boolean containsId = taskMap.containsKey(id);
-                if (containsId) {
-                    Task task = taskMap.get(id);
-                    return task;
+                boolean containsId = taskMap.containsKey(id);// если taskMap содержит id то возвращает true
+                if (containsId) {// если id содержится в taskMap
+                    Task task = taskMap.get(id);// то тогда берем из taskMap таску и кладем ее в новую task
+                    return task;// возвращаем новую task
                 } else {
                     return null;
                 }
@@ -101,14 +101,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteTasksByType(TaskType taskType) {
+    public boolean deleteTasksByType(TaskType taskType) { // удаление всех тасок в Map по типу
         switch (taskType) {
             case TASK: {
-                if (!taskMap.isEmpty()) {
-                    taskMap.clear();
+                if (!taskMap.isEmpty()) { // если taskMap не пустая
+                    taskMap.clear();// то удалить все значения из taskMap
                     return true;
                 } else {
-                    return false;
+                    return false;// если пустая, то вернуть ошибку
                 }
             }
             case SUBTASK: {
@@ -218,7 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void changeStatus(int epicId) {
+    public void changeStatus(int epicId) {// обновление статуса
         List<SubTask> subTaskList = new ArrayList<>();
         EpicTask tempEpicTask = ((EpicTask) getByIdAndTypeTask(epicId, TaskType.EPICTASK));
         List<Integer> subTaskIds = tempEpicTask.getSubTaskIds();
@@ -247,25 +247,25 @@ public class InMemoryTaskManager implements TaskManager {
                     break;
             }
         }
-        if (isNew && !isDone && !isInProgress) {
-            epicTaskMap.get(epicId).setStatus(TaskStatus.NEW);
-        } else if (!isNew && isDone && !isInProgress) {
-            epicTaskMap.get(epicId).setStatus(TaskStatus.DONE);
+        if (isNew && !isDone && !isInProgress) { // если новая, невыполненная, не в прогрессе
+            epicTaskMap.get(epicId).setStatus(TaskStatus.NEW); // то статус новая
+        } else if (!isNew && isDone && !isInProgress) { // если не новая, выполнена, не в прогрессе
+            epicTaskMap.get(epicId).setStatus(TaskStatus.DONE);// то выполнена
         } else
-            epicTaskMap.get(epicId).setStatus(TaskStatus.IN_PROGRESS);
+            epicTaskMap.get(epicId).setStatus(TaskStatus.IN_PROGRESS); // иначе в прогрессе
     }
 
-    public static void updateTask(int id, Task task, TaskManager manager) {  // этот метод умеет работать со всеми тасками, его надо заменить на утильный
-        task.setId(id);
-        manager.getHistoryManager().add(task);
+    public static void updateTask(int id, Task task, TaskManager manager) {  // обновление task
+        task.setId(id);// обращаемся к task
+        manager.getHistoryManager().add(task);// task записывается в историю
 
-        if (task instanceof SubTask) {
-            manager.getSubTaskMap().put(id, (SubTask) task);
+        if (task instanceof SubTask) { // если переданная task является SubTask
+            manager.getSubTaskMap().put(id, (SubTask) task);//то тогда кладем ее SubTaskMap по ключу и значению
             int epicIdOfSubtask = manager.getSubTaskMap().get(id).getEpicId();
             manager.changeStatus(epicIdOfSubtask);
         }
         if (task instanceof EpicTask) {
-            for (Map.Entry<Integer, SubTask> subTask : manager.getSubTaskMap().entrySet()) {
+            for (Map.Entry<Integer, SubTask> subTask : manager.getSubTaskMap().entrySet()) { // проходимся циклом по SubTaskMap (по его парам)
                 int epicIdOfSubtask = subTask.getValue().getEpicId();
                 if (epicIdOfSubtask == id) {
                     ((EpicTask) task).addSubTaskId(epicIdOfSubtask);
@@ -288,10 +288,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(int id) {
-        Task task = taskMap.get(id);
-        historyManager.add(task);
-        return task;
+    public Task getTask(int id) { // получить Task
+        Task task = taskMap.get(id); //получает id из taskMap
+        historyManager.add(task); //вызывает historyManager добавляет туда task
+        return task; // возвращает таску
     }
 
     @Override
@@ -319,4 +319,5 @@ public class InMemoryTaskManager implements TaskManager {
     public Map<Integer, EpicTask> getEpicTaskMap() {
         return epicTaskMap;
     }
+
 }

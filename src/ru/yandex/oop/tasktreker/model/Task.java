@@ -14,10 +14,10 @@ public class Task {
     public Task (){
     }
 
-    public Task(String name, String description, TaskStatus taskStatus, TaskType taskType) {
+    public Task(String name, String description,  TaskType taskType) {
         this.name = name;
         this.description = description;
-        this.taskStatus = taskStatus;
+        this.taskStatus = TaskStatus.NEW;
         this.taskType = taskType;
     }
 
