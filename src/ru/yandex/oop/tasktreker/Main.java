@@ -48,15 +48,24 @@ public class Main {
         System.out.println(manager.getByIdAndTypeTask(2, TaskType.SUBTASK));
         System.out.println(manager.getByIdAndTypeTask(3, TaskType.SUBTASK));
 
-
-
-
-
         System.out.println("**********************************EPICTASK2**********************************");
         EpicTask epicTask2 = new EpicTask("купить продукты", "сходить в магазин", TaskType.EPICTASK);
 
         int epicId2 = manager.createTaskAndReturnId(epicTask2);
         System.out.println(manager.getByIdAndTypeTask(4, TaskType.EPICTASK));
+
+        Task task01 = new Task();
+        Task task02 = new Task();
+        Task task03 = new Task();
+
+        manager.createTaskAndReturnId(task01);
+        manager.getHistoryManager().getHistory().forEach(System.out::println);
+
+        manager.createTaskAndReturnId(task02);
+        manager.getHistoryManager().getHistory().forEach(System.out::println);
+
+        manager.createTaskAndReturnId(task03);
+        manager.getHistoryManager().getHistory().forEach(System.out::println);
 
 
 //        System.out.println("**********************************SUBTASK(Х1)**********************************");
