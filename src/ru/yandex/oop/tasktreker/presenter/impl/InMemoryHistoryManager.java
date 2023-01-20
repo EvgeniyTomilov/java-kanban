@@ -10,26 +10,37 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    Map<Integer, Node> historyTaskMap = new LinkedHashMap<>();
+    private Map<Integer, Node> historyTaskMap = new LinkedHashMap<>();
 
     private Node<Task> first;
     private Node<Task> last;
+
+    public int size = historyTaskMap.size();
 
 
     public void remove(int id){ // это к 5-му тз
         historyTaskMap.remove(id);
     }
 
-    public void removeNode(Node node) {
-        Task task = (Task) node.getTask();
-        historyTaskMap.remove(task.getId());
+    public void removeNode(Node<Task> node) {
+        if (node.equals(first)) {
+            first = node.getNext();
+        }
+        if (node.equals(last)) {
+            last = node.getPrev();
+        }
+        int id = node.getTask().getId();
+        historyTaskMap.get(id).getPrev().setNext(node.getNext());
+        historyTaskMap.get(id).getNext().setPrev(node.getPrev());
+        historyTaskMap.remove(node.getTask().getId());
     }
 
     public void linkLast(Task task) {
-        Node node = new Node(task);
+        Node node = new Node(last, task, null);
         if (historyTaskMap.isEmpty()) {
             first = node;
         }
+        historyTaskMap.get(last.getTask().getId()).setNext(node);
         historyTaskMap.put(task.getId(), node);
         last = node;
     }
@@ -57,16 +68,36 @@ public class InMemoryHistoryManager implements HistoryManager {
         return list;
     }
 
-    public class Node<Task> {
-        private final Task task;
+    private static class Node<Task> {
 
-        public Node(Task task) {
-            this.task = task;
+        private final Task task;
+        private Node<Task> prev;
+        private Node<Task> next;
+
+        public Node(Node<Task> prev, Task item, Node<Task> next) {
+            this.task = item;
+            this.prev = prev;
+            this.next = next;
         }
 
         public Task getTask() {
             return task;
         }
-    }
 
+        public Node<Task> getPrev() {
+            return prev;
+        }
+
+        public void setPrev(Node<Task> prev) {
+            this.prev = prev;
+        }
+
+        public Node<Task> getNext() {
+            return next;
+        }
+
+        public void setNext(Node<Task> next) {
+            this.next = next;
+        }
+    }
 }
