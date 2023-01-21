@@ -3,8 +3,11 @@ package ru.yandex.oop.tasktreker;
 import ru.yandex.oop.tasktreker.model.*;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
+import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
+
+import java.util.List;
 
 public class Main {
 
@@ -27,45 +30,86 @@ public class Main {
 //        System.out.println(manager.getByIdAndTypeTask(1, TaskType.TASK));
 
 
-        System.out.println("**********************************EPICTASK1**********************************");
+//        System.out.println("**********************************EPICTASK1**********************************");
         EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия", TaskType.EPICTASK);
+        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
 
-        int epicId1 = manager.createTaskAndReturnId(epicTask1);
+        EpicTask epicTask2 = new EpicTask("Купить квартиру", "улучшить жилищьные условия", TaskType.EPICTASK);
+        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
 
-        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло",  TaskType.SUBTASK, epicId1);
+        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло",  TaskType.SUBTASK, epicTask1.getId());
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        SubTask subTask2 = new SubTask("Квартира", "Найти хату",  TaskType.SUBTASK, epicId1);
+
+        SubTask subTask2 = new SubTask("Квартира", "Найти хату",  TaskType.SUBTASK, epicTask1.getId());
         subTask2.setStatus(TaskStatus.DONE);
-        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicId1);
+
+        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicTask1.getId());
         subTask3.setStatus(TaskStatus.NEW);
 
         manager.createTaskAndReturnId(subTask1);
         manager.createTaskAndReturnId(subTask2);
         manager.createTaskAndReturnId(subTask3);
 
-        System.out.println(manager.getByIdAndTypeTask(0, TaskType.EPICTASK));
-        System.out.println(manager.getByIdAndTypeTask(1, TaskType.SUBTASK));
-        System.out.println(manager.getByIdAndTypeTask(2, TaskType.SUBTASK));
-        System.out.println(manager.getByIdAndTypeTask(3, TaskType.SUBTASK));
 
-        System.out.println("**********************************EPICTASK2**********************************");
-        EpicTask epicTask2 = new EpicTask("купить продукты", "сходить в магазин", TaskType.EPICTASK);
+        Task t1 = manager.getAnyTask(4);
+        Task t2 = manager.getAnyTask(2);
+        Task t3 = manager.getAnyTask(1);
+        Task t4 = manager.getAnyTask(3);
+        Task t5 = manager.getAnyTask(5);
 
-        int epicId2 = manager.createTaskAndReturnId(epicTask2);
-        System.out.println(manager.getByIdAndTypeTask(4, TaskType.EPICTASK));
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+//        t2 = manager.getAnyTask(4);
+//        t3 = manager.getAnyTask(3);
+//        t4 = manager.getAnyTask(2);
+//        t5 = manager.getAnyTask(1);
 
-        Task task01 = new Task();
-        Task task02 = new Task();
-        Task task03 = new Task();
+        manager.deleteTasksByType(TaskType.EPICTASK);
 
-        manager.createTaskAndReturnId(task01);
-        manager.getHistoryManager().getHistory().forEach(System.out::println);
+        HistoryManager historyManager = manager.getHistoryManager();
 
-        manager.createTaskAndReturnId(task02);
-        manager.getHistoryManager().getHistory().forEach(System.out::println);
+        List<Task> history = historyManager.getHistory();
 
-        manager.createTaskAndReturnId(task03);
-        manager.getHistoryManager().getHistory().forEach(System.out::println);
+        history.forEach(System.out::println);
+
+
+
+
+
+//        int id = epicTask1.getId();
+//        int epicId1 = manager.createTaskAndReturnId(epicTask1);
+//
+//
+//        manager.createTaskAndReturnId(subTask1);
+//        manager.createTaskAndReturnId(subTask2);
+//        manager.createTaskAndReturnId(subTask3);
+//
+//        System.out.println(manager.getByIdAndTypeTask(0, TaskType.EPICTASK));
+//        System.out.println(manager.getByIdAndTypeTask(1, TaskType.SUBTASK));
+//        System.out.println(manager.getByIdAndTypeTask(2, TaskType.SUBTASK));
+//        System.out.println(manager.getByIdAndTypeTask(3, TaskType.SUBTASK));
+//
+//        System.out.println("**********************************EPICTASK2**********************************");
+//        EpicTask epicTask2 = new EpicTask("купить продукты", "сходить в магазин", TaskType.EPICTASK);
+//
+//        int epicId2 = manager.createTaskAndReturnId(epicTask2);
+//        System.out.println(manager.getByIdAndTypeTask(4, TaskType.EPICTASK));
+//
+//        Task task01 = new Task();
+//        Task task02 = new Task();
+//        Task task03 = new Task();
+//
+//        manager.createTaskAndReturnId(task01);
+//        manager.getHistoryManager().getHistory().forEach(System.out::println);
+//
+//        manager.createTaskAndReturnId(task02);
+//        manager.getHistoryManager().getHistory().forEach(System.out::println);
+//
+//        manager.createTaskAndReturnId(task03);
+//        manager.getHistoryManager().getHistory().forEach(System.out::println);
 
 
 //        System.out.println("**********************************SUBTASK(Х1)**********************************");

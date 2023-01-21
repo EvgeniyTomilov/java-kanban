@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.taskMap = new HashMap<>();
         this.subTaskMap = new HashMap<>();
         this.epicTaskMap = new HashMap<>();
-        nextId = 0;
+        nextId = 1;
 
     }
 
@@ -105,6 +105,11 @@ public class InMemoryTaskManager implements TaskManager {
         switch (taskType) {
             case TASK: {
                 if (!taskMap.isEmpty()) { // если taskMap не пустая
+
+                    for (Map.Entry<Integer, Task> pair : taskMap.entrySet()) {
+                        historyManager.remove(pair.getKey());
+                    }
+
                     taskMap.clear();// то удалить все значения из taskMap
                     return true;
                 } else {
@@ -114,11 +119,12 @@ public class InMemoryTaskManager implements TaskManager {
             case SUBTASK: {
                 if (!subTaskMap.isEmpty()) {
 
-                    subTaskMap.clear();
-                    for (Map.Entry<Integer, EpicTask> epicTask : epicTaskMap.entrySet()) {
-                        epicTask.getValue().cLearAllSubTasksId();
+                    for (Map.Entry<Integer, SubTask> epicTask : subTaskMap.entrySet()) {
+//                        epicTask.getValue().cLearAllSubTasksId();
                         updateTask(epicTask.getKey(), epicTask.getValue(), this);
+                        historyManager.remove(epicTask.getKey());
                     }
+                    subTaskMap.clear();
                     return true;
                 } else {
                     return false;
@@ -126,7 +132,17 @@ public class InMemoryTaskManager implements TaskManager {
             }
             case EPICTASK: {
                 if (!epicTaskMap.isEmpty()) {
+
+                    for (Map.Entry<Integer, EpicTask> pair : epicTaskMap.entrySet()) {
+                        historyManager.remove(pair.getKey());
+                    }
+
                     epicTaskMap.clear();
+
+                    for (Map.Entry<Integer, SubTask> pair : subTaskMap.entrySet()) {
+                        historyManager.remove(pair.getKey());
+                    }
+
                     subTaskMap.clear();
                     return true;
                 } else {
@@ -187,9 +203,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (task instanceof SubTask) {
             this.subTaskMap.put(keyId, (SubTask) task);
             int epicIdOfSubtask = subTaskMap.get(keyId).getEpicId();
-            EpicTask epicTask = epicTaskMap.get(epicIdOfSubtask);
-            epicTask.addSubTaskId(keyId);
-            changeStatus(epicTask.getId());
+            epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId);
+            changeStatus(epicTaskMap.get(epicIdOfSubtask).getId());
         } else if (task instanceof EpicTask) {
             this.epicTaskMap.put(keyId, (EpicTask) task);
         } else {
@@ -285,6 +300,25 @@ public class InMemoryTaskManager implements TaskManager {
 
     public HistoryManager getHistoryManager() {
         return historyManager;
+    }
+
+
+    // уточнить можно ли так оставить
+    @Override
+    public Task getAnyTask(int id) {
+        if (taskMap.containsKey(id)) {
+            Task task = taskMap.get(id);
+            historyManager.add(task);
+            return task;
+        }
+        if (subTaskMap.containsKey(id)) {
+            SubTask task = subTaskMap.get(id);
+            historyManager.add(task);
+            return task;
+        }
+        EpicTask task = epicTaskMap.get(id);
+        historyManager.add(task);
+        return task;
     }
 
     @Override

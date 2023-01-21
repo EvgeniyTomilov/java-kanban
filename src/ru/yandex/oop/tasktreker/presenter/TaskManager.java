@@ -41,5 +41,7 @@ public interface TaskManager {
 
     EpicTask getEpic(int id);
 
+    Task getAnyTask(int id);
+
 
 }

@@ -36,13 +36,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void linkLast(Task task) {
-        Node node = new Node(last, task, null);
+        final Node<Task> oldLast = last;
+        final Node<Task> newLast = new Node<>(last, task, null);
         if (historyTaskMap.isEmpty()) {
-            first = node;
+            first = newLast;
         }
-        historyTaskMap.get(last.getTask().getId()).setNext(node);
-        historyTaskMap.put(task.getId(), node);
-        last = node;
+        last = newLast;
+        historyTaskMap.put(task.getId(), newLast);
     }
 
     @Override
@@ -60,13 +60,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         return list;
     }
 
-    public List<Task> getTasks() {
-        List<Task> list = new ArrayList<>();
-        for (Map.Entry<Integer, Node> pair : historyTaskMap.entrySet()) {
-            list.add((Task) pair.getValue().getTask());
-        }
-        return list;
-    }
+//    public List<Task> getTasks() {
+//        List<Task> list = new ArrayList<>();
+//        for (Map.Entry<Integer, Node> pair : historyTaskMap.entrySet()) {
+//            list.add((Task) pair.getValue().getTask());
+//        }
+//        return list;
+//    }
 
     private static class Node<Task> {
 
