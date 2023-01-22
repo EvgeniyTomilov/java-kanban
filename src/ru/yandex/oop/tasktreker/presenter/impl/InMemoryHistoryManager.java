@@ -10,15 +10,27 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private Map<Integer, Node> historyTaskMap = new LinkedHashMap<>();
+    private Map<Integer, Node> historyTaskMap;
 
     private Node<Task> first;
     private Node<Task> last;
 
-    public int size = historyTaskMap.size();
+    private int size;
 
+    public InMemoryHistoryManager() {
+        this.historyTaskMap = new LinkedHashMap<>();
+        this.first = null;
+        this.last = null;
+        this.size = getHistory().size();
+    }
 
     public void remove(int id){ // это к 5-му тз
+        Node newPrev = historyTaskMap.get(id).getPrev();
+        Node newNext = historyTaskMap.get(id).getNext();
+
+        historyTaskMap.get(id).getPrev().setNext(newNext);
+        historyTaskMap.get(id).getNext().setPrev(newPrev);
+
         historyTaskMap.remove(id);
     }
 
@@ -42,6 +54,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             first = newLast;
         }
         last = newLast;
+        last.setPrev(oldLast);
         historyTaskMap.put(task.getId(), newLast);
     }
 
