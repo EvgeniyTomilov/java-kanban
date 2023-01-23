@@ -14,6 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = new InMemoryTaskManager();
+        HistoryManager historyManager = manager.getHistoryManager();
 //        System.out.println("**********************************TASK**********************************");
 //        Task task1 = new Task("Тренировка", "день грудь-плечи", TaskStatus.NEW, TaskType.TASK);
 //        Task task2 = new Task("Проснуться", "открыть глаза-встать с кровати", TaskStatus.DONE, TaskType.TASK);
@@ -50,7 +51,6 @@ public class Main {
         manager.createTaskAndReturnId(subTask2);
         manager.createTaskAndReturnId(subTask3);
 
-
         Task t1 = manager.getAnyTask(4);
         Task t2 = manager.getAnyTask(2);
         Task t3 = manager.getAnyTask(1);
@@ -62,14 +62,8 @@ public class Main {
         t1 = manager.getAnyTask(5);
         t1 = manager.getAnyTask(5);
         t1 = manager.getAnyTask(5);
-//        t2 = manager.getAnyTask(4);
-//        t3 = manager.getAnyTask(3);
-//        t4 = manager.getAnyTask(2);
-//        t5 = manager.getAnyTask(1);
 
-        manager.deleteTasksByType(TaskType.EPICTASK);
-
-        HistoryManager historyManager = manager.getHistoryManager();
+//        manager.deleteTasksByType(TaskType.EPICTASK);
 
         List<Task> history = historyManager.getHistory();
 

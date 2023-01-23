@@ -19,32 +19,32 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public InMemoryHistoryManager() {
         this.historyTaskMap = new LinkedHashMap<>();
-        this.first = null;
-        this.last = null;
+        this.first = new Node<>(null, null, last);
+        this.last = new Node<>(first, null, null);
         this.size = getHistory().size();
     }
 
     public void remove(int id){ // это к 5-му тз
-        Node newPrev = historyTaskMap.get(id).getPrev();
-        Node newNext = historyTaskMap.get(id).getNext();
-
-        historyTaskMap.get(id).getPrev().setNext(newNext);
-        historyTaskMap.get(id).getNext().setPrev(newPrev);
-
+        removeNode(historyTaskMap.get(id));
         historyTaskMap.remove(id);
+        size--;
     }
 
-    public void removeNode(Node<Task> node) {
-        if (node.equals(first)) {
-            first = node.getNext();
+    public void removeNode(Node<Task> delete) {
+        Node temp = first;
+        Node newNext = delete.getNext();
+        Node newPrev = delete.getPrev();
+        while (temp.getNext() != null) {
+            if (temp.getNext().equals(delete)) {
+                Task task = (Task) temp.getTask();
+                int id = task.getId();
+                historyTaskMap.get(id).setNext(newNext);
+                historyTaskMap.get(delete.getTask().getId()).getNext().setPrev(newPrev);
+            } else {
+                temp = temp.getNext();
+
+            }
         }
-        if (node.equals(last)) {
-            last = node.getPrev();
-        }
-        int id = node.getTask().getId();
-        historyTaskMap.get(id).getPrev().setNext(node.getNext());
-        historyTaskMap.get(id).getNext().setPrev(node.getPrev());
-        historyTaskMap.remove(node.getTask().getId());
     }
 
     public void linkLast(Task task) {
@@ -60,8 +60,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        remove(task.getId());
+        if (historyTaskMap.containsKey(task.getId())) {
+            remove(task.getId());
+        }
         linkLast(task);
+        size++;
     }
 
     @Override
@@ -80,6 +83,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 //        }
 //        return list;
 //    }
+
+
+    public int getSize() {
+        return size;
+    }
 
     private static class Node<Task> {
 

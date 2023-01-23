@@ -8,5 +8,6 @@ public interface HistoryManager {
     void add(Task task);
     void remove(int id); // это к 5-му тз
     List<Task> getHistory();
+    int getSize();
 }
 
