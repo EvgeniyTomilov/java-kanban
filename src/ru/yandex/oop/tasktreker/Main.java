@@ -47,6 +47,7 @@ public class Main {
         SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicTask1.getId());
         subTask3.setStatus(TaskStatus.NEW);
 
+
         manager.createTaskAndReturnId(subTask1);
         manager.createTaskAndReturnId(subTask2);
         manager.createTaskAndReturnId(subTask3);
@@ -62,6 +63,7 @@ public class Main {
         t1 = manager.getAnyTask(5);
         t1 = manager.getAnyTask(5);
         t1 = manager.getAnyTask(5);
+
 
 //        manager.deleteTasksByType(TaskType.EPICTASK);
 

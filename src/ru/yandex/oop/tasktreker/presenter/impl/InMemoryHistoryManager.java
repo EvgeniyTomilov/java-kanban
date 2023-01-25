@@ -19,9 +19,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public InMemoryHistoryManager() {
         this.historyTaskMap = new LinkedHashMap<>();
-        this.first = new Node<>(null, null, last);
-        this.last = new Node<>(first, null, null);
-        this.size = getHistory().size();
+        this.first = new Node<>(null, null, null);
+        this.last = null;
+        this.size = 0;
     }
 
     public void remove(int id){ // это к 5-му тз
@@ -31,31 +31,37 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void removeNode(Node<Task> delete) {
-        Node temp = first;
-        Node newNext = delete.getNext();
-        Node newPrev = delete.getPrev();
-        while (temp.getNext() != null) {
-            if (temp.getNext().equals(delete)) {
-                Task task = (Task) temp.getTask();
-                int id = task.getId();
-                historyTaskMap.get(id).setNext(newNext);
-                historyTaskMap.get(delete.getTask().getId()).getNext().setPrev(newPrev);
-            } else {
-                temp = temp.getNext();
-
-            }
+        final Node<Task> next = delete.next;
+        final Node<Task> prev = delete.prev;
+        if (prev == null) {
+            first = next;
+        } else  {
+            prev.next = next;
+            delete.prev = null;
         }
+        if (next == null) {
+            last = prev;
+        } else  {
+            next.prev = prev;
+            delete.next = null;
+        }
+        size--;
     }
 
     public void linkLast(Task task) {
-        final Node<Task> oldLast = last;
-        final Node<Task> newLast = new Node<>(last, task, null);
-        if (historyTaskMap.isEmpty()) {
-            first = newLast;
+        if (task == null) {
+            throw new NullPointerException("Task is null");
         }
-        last = newLast;
-        last.setPrev(oldLast);
-        historyTaskMap.put(task.getId(), newLast);
+        Node<Task> oldLast = last;
+        Node<Task> newNode = new Node<>(oldLast, task, null);
+        last = newNode;
+        if (oldLast == null) {
+            first = newNode;
+        } else {
+            oldLast.setNext(newNode);
+        }
+        historyTaskMap.put(task.getId(), newNode);
+        size++;
     }
 
     @Override
@@ -70,8 +76,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> getHistory() {
         List<Task> list = new ArrayList<>();
-        for (Map.Entry<Integer, Node> pair : historyTaskMap.entrySet()) {
-            list.add((Task) pair.getValue().getTask());
+        if (historyTaskMap.isEmpty()) {
+            System.out.println("history is empty");
+        }
+        Node<Task> temp = first;
+        while (temp.getNext() != null) {
+            list.add(temp.getTask());
+            temp = temp.getNext();
         }
         return list;
     }
@@ -119,6 +130,15 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         public void setNext(Node<Task> next) {
             this.next = next;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "task=" + task +
+                    ", prev=" + prev +
+                    ", next=" + next +
+                    '}';
         }
     }
 }
