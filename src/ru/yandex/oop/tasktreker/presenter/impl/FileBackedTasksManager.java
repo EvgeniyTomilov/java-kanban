@@ -7,6 +7,7 @@ import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
+import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
 import java.io.*;
@@ -25,11 +26,60 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super();
     }
 
+    public static void main(String[] args){
+        TaskManager manager = new FileBackedTasksManager();
+        HistoryManager historyManager = manager.getHistoryManager();
+
+        System.out.println("**********************************TASK*************************************");
+        Task task1 = new Task("Тренировка", "день грудь-плечи", TaskType.TASK);
+        Task task2 = new Task("Тренировка", "день ноги", TaskType.TASK);
+        manager.createTaskAndReturnId(task1);
+        manager.createTaskAndReturnId(task2);
+        task1.setStatus(TaskStatus.IN_PROGRESS);
+
+        System.out.println("**********************************EPIC*************************************");
+        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия", TaskType.EPICTASK);
+        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты", TaskType.EPICTASK);
+        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
+        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
+
+        System.out.println("**********************************SUBTASK**********************************");
+        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло",  TaskType.SUBTASK, epicTask1.getId());
+        SubTask subTask2 = new SubTask("Квартира", "Найти хату",  TaskType.SUBTASK, epicTask1.getId());
+        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicTask1.getId());
+        subTask1.setStatus(TaskStatus.IN_PROGRESS);
+        subTask2.setStatus(TaskStatus.DONE);
+        subTask3.setStatus(TaskStatus.NEW);
+        manager.createTaskAndReturnId(subTask1);
+        manager.createTaskAndReturnId(subTask2);
+        manager.createTaskAndReturnId(subTask3);
+
+
+        Task t1 = manager.getAnyTask(4);
+        Task t2 = manager.getAnyTask(2);
+        Task t3 = manager.getAnyTask(1);
+        Task t4 = manager.getAnyTask(3);
+        Task t5 = manager.getAnyTask(5);
+
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+
+
+        List<Task> history = historyManager.getHistory();
+        history.forEach(System.out::println);
+
+
+
+    }
+
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("id,type,name,status,description,epic" + "\n");
             for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
-                writer.write(toString(pair.getValue()));
+                writer.write(toString(pair.getValue()) + "\n");
             }
             for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
                 writer.write(toString(pair.getValue()) + "\n");
@@ -45,7 +95,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Не удалось сохранит данные",e.getCause());
+            throw new ManagerSaveException("Не удалось сохранит данные " + "\n ошибка",e.getCause());
         }
 
 
@@ -109,34 +159,36 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
 
      private static String historyToString(HistoryManager manager){
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Task> tasks = manager.getHistory();
+        StringBuilder stringBuilder = new StringBuilder();// создали стрингбилдер
+        List<Task> tasks = manager.getHistory();// создали лист тасок из истории
          for (Task task : tasks) {
              stringBuilder.append(task.getId());
              stringBuilder.append(",");
-         }
-         return stringBuilder.toString();
+         }//достали айди из таски сложили их через ","
+         return stringBuilder.toString(); //вернули стринговое значение стрингбилдера
     }
 
-    static List<Integer> historyFromString(String value){
-        String[] line = value.split(",");
+    static List<Integer> historyFromString(String str){
+        String[] element = str.split(",");
         List<Integer> list = new ArrayList<>();
-        for (int i = 0; i<line.length; i++) {
-            list.add(Integer.parseInt(line[i])) ;
+        for (int i = 0; i<element.length; i++) {
+            list.add(Integer.parseInt(element[i])) ;// добавили элементы массива в лист
         }
         return list;
     }
 
     @Override
     public Collection<? extends Task> getTaskByType(TaskType taskType) {
-        Collection<? extends Task> taskByType = super.getTaskByType(taskType);
+        Collection<? extends Task> tasksByType = super.getTaskByType(taskType);
         save();
-        return taskByType;
+        return tasksByType;
     }
 
     @Override
     public Task getByIdAndTypeTask(int id, TaskType taskType) {
-        return super.getByIdAndTypeTask(id, taskType);
+        Task tasksByIdAndType = super.getByIdAndTypeTask(id, taskType);
+        save();
+        return tasksByIdAndType;
     }
 
     @Override
@@ -174,7 +226,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public HistoryManager getHistoryManager() {
-        return super.getHistoryManager();
+        HistoryManager HistoryManager = super.getHistoryManager();
+        save();
+        return HistoryManager;
     }
 
     @Override
