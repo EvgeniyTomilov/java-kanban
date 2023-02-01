@@ -65,7 +65,7 @@ public class Main {
         t1 = manager.getAnyTask(5);
 
 
-        manager.deleteTasksByType(TaskType.SUBTASK);
+//       manager.deleteTasksByType(TaskType.SUBTASK);
 
         List<Task> history = historyManager.getHistory();
 

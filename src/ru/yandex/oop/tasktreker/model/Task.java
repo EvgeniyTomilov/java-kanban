@@ -21,6 +21,14 @@ public class Task {
         this.taskType = taskType;
     }
 
+    public Task(String name, int id, String description, TaskStatus taskStatus, TaskType taskType) {
+        this.name = name;
+        this.id = id;
+        this.description = description;
+        this.taskStatus = taskStatus;
+        this.taskType = taskType;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

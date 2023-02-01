@@ -24,6 +24,7 @@ public class EpicTask extends Task {
         this.subTasksId = new ArrayList<>();
     }
 
+
     public List<Integer> getSubTaskIds() {
         return subTasksId;
     }
