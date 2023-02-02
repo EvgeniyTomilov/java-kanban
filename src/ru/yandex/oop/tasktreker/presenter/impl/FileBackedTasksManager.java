@@ -26,6 +26,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super();
     }
 
+    public FileBackedTasksManager(String path) {
+
+    }// как сделать конструктор для loadFromFile
+
     public static void main(String[] args){
         TaskManager manager = new FileBackedTasksManager();
         HistoryManager historyManager = manager.getHistoryManager();
@@ -71,8 +75,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         List<Task> history = historyManager.getHistory();
         history.forEach(System.out::println);
 
-
-
     }
 
     private void save() {
@@ -89,9 +91,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             writer.write("\n");
 
-            for (Task task : historyManager.getHistory()) {
-                writer.write(task.getId() + ",");
-            }
+//            for (Task task : historyManager.getHistory()) {
+//                writer.write(task.getId() + ",");
+//            }
+            writer.write(historyToString(historyManager));
 
 
         } catch (IOException e) {
@@ -168,7 +171,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
          return stringBuilder.toString(); //вернули стринговое значение стрингбилдера
     }
 
-    static List<Integer> historyFromString(String str){
+    public static List<Integer> historyFromString(String str){
         String[] element = str.split(",");
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i<element.length; i++) {
@@ -193,12 +196,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public boolean deleteTasksByType(TaskType taskType) {
-        return super.deleteTasksByType(taskType);
+        boolean tasksByType = super.deleteTasksByType(taskType);
+        save();
+        return tasksByType;
     }
 
     @Override
     public boolean deleteByIdAndTypeTask(Integer id, TaskType taskType) {
-        return super.deleteByIdAndTypeTask(id, taskType);
+        boolean deleteByIdAndTypeTask = super.deleteByIdAndTypeTask(id, taskType);
+        save();
+        return deleteByIdAndTypeTask;
     }
 
     @Override
@@ -243,6 +250,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public SubTask getSubtask(int id) {
+
         return super.getSubtask(id);
 
     }
