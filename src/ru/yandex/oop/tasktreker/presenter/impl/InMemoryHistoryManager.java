@@ -1,7 +1,6 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
 
-import ru.yandex.oop.tasktreker.model.Node;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 
@@ -11,10 +10,9 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private Map<Integer, Node> historyTaskMap;
-
+    private List<Task> range = new ArrayList<Task>();
     private Node<Task> first;
     private Node<Task> last;
-
     private int size;
 
     public InMemoryHistoryManager() {
@@ -24,111 +22,81 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.size = 0;
     }
 
-    public void remove(int id){ // это к 5-му тз
-        removeNode(historyTaskMap.get(id));
-        historyTaskMap.remove(id);
-        size--;
+    @Override
+    public void remove(int id) {
+        if (historyTaskMap.keySet().contains(id)) {
+            removeNode(historyTaskMap.remove(id));
+        }
     }
 
-    public void removeNode(Node<Task> delete) {
-        final Node<Task> next = delete.next;
-        final Node<Task> prev = delete.prev;
-        if (prev == null) {
-            first = next;
-        } else  {
-            prev.next = next;
-            delete.prev = null;
+    public void removeNode(Node<Task> node) {
+        if (historyTaskMap.keySet().contains(node.task.getId())) {
+            Node<Task> prevNode = node.prev;
+            Node<Task> nextNode = node.next;
+            historyTaskMap.remove(node.task.getId());
+            if (prevNode != null) {
+                prevNode.next = nextNode;
+            }
+            if (nextNode != null) {
+                nextNode.prev = prevNode;
+            }
+            size--;
         }
-        if (next == null) {
-            last = prev;
-        } else  {
-            next.prev = prev;
-            delete.next = null;
-        }
-        size--;
     }
 
     public void linkLast(Task task) {
         if (task == null) {
             throw new NullPointerException("Task is null");
         }
-        Node<Task> oldLast = last;
-        Node<Task> newNode = new Node<>(oldLast, task, null);
+        final Node<Task> oldTail = last;
+        final Node<Task> newNode = new Node<>(oldTail, task, null);
         last = newNode;
-        if (oldLast == null) {
+        if (oldTail == null)
             first = newNode;
-        } else {
-            oldLast.setNext(newNode);
-        }
-        historyTaskMap.put(task.getId(), newNode);
+        else
+            oldTail.prev = newNode;
         size++;
+        if (task != null) {
+            historyTaskMap.put(task.getId(), newNode);
+        }
     }
 
-    @Override
     public void add(Task task) {
-        if (historyTaskMap.containsKey(task.getId())) {
-            remove(task.getId());
+        if (historyTaskMap.keySet().contains(task.getId())) {
+            if (historyTaskMap.get(task.getId()) != null) {
+                removeNode(historyTaskMap.get(task.getId()));
+            }
         }
         linkLast(task);
-        size++;
     }
 
     @Override
-    public List<Task> getHistory() {
-        List<Task> list = new ArrayList<>();
+    public ArrayList<Task> getHistory() {
         if (historyTaskMap.isEmpty()) {
             System.out.println("history is empty");
         }
-        Node<Task> temp = first;
-        while (temp.getNext() != null) {
-            list.add(temp.getTask());
-            temp = temp.getNext();
+        Node<Task> tmpNode = first;
+        while(tmpNode.next != null) {
+            range.add(tmpNode.task);
+            tmpNode = tmpNode.next;
         }
-        return list;
+
+        return (ArrayList<Task>) range;
     }
 
-//    public List<Task> getTasks() {
-//        List<Task> list = new ArrayList<>();
-//        for (Map.Entry<Integer, Node> pair : historyTaskMap.entrySet()) {
-//            list.add((Task) pair.getValue().getTask());
-//        }
-//        return list;
-//    }
-
-
+    @Override
     public int getSize() {
         return size;
     }
 
     private static class Node<Task> {
-
-        private final Task task;
-        private Node<Task> prev;
-        private Node<Task> next;
+        final Task task;
+        Node<Task> prev;
+        Node<Task> next;
 
         public Node(Node<Task> prev, Task item, Node<Task> next) {
             this.task = item;
             this.prev = prev;
-            this.next = next;
-        }
-
-        public Task getTask() {
-            return task;
-        }
-
-        public Node<Task> getPrev() {
-            return prev;
-        }
-
-        public void setPrev(Node<Task> prev) {
-            this.prev = prev;
-        }
-
-        public Node<Task> getNext() {
-            return next;
-        }
-
-        public void setNext(Node<Task> next) {
             this.next = next;
         }
 
