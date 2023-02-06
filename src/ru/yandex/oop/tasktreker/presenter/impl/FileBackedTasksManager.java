@@ -1,5 +1,6 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
+import ru.yandex.oop.tasktreker.exception.ManagerLoadException;
 import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
@@ -11,6 +12,8 @@ import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +63,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 //        manager.createTaskAndReturnId(subTask2);
 //        manager.createTaskAndReturnId(subTask3);
 
-
 //        Task t1 = manager.getAnyTask(4);
 //        Task t2 = manager.getAnyTask(2);
 //        Task t3 = manager.getAnyTask(1);
@@ -73,10 +75,30 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 //        t1 = manager.getAnyTask(5);
 //        t1 = manager.getAnyTask(5);
 
-
 //        List<Task> history = historyManager.getHistory();
 //        history.forEach(System.out::println);
+    }
 
+    public static FileBackedTasksManager loadFromFile(File file) {
+        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
+        try {
+            String string = Files.readString(Path.of(file.getPath()));
+            String[] lines = string.split(System.lineSeparator());
+            for (int i = 1; i < lines.length; i++) {
+                if (!lines[i].isBlank() && i != lines.length - 1) {
+                    fromFile.createTaskAndReturnId(fromFile.fromString(lines[i]));
+                }
+                if (i == lines.length -1) {
+                    List<Integer> historyList = historyFromString(lines[lines.length -1]);
+                    for (int id : historyList) {
+                        fromFile.getHistoryManager().add(fromFile.getAnyTask(id));
+                    }
+                }
+            }
+            return fromFile;
+        } catch (IOException e){
+            throw new ManagerLoadException("Не загрузить  данные " + "\n ошибка",e.getCause());
+        }
     }
 
     private void save() {
@@ -102,8 +124,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось сохранит данные " + "\n ошибка",e.getCause());
         }
-
-
     }
 
     public String toString(Task task) {
