@@ -1,13 +1,13 @@
 package ru.yandex.oop.tasktreker.model;
 
-public  class Node<Task>{
-    Task item;
-    Node<Task> next;
-    Node<Task> prev;
+  public class Node<T>{
+    public T data;
+    public Node<T> next;
+    public Node<T> prev;
 
-    Node(Node<Task> prev, Task element, Node<Task> next) {
-        this.item = element;
-        this.next = next;
-        this.prev = prev;
-    }
-}
+      public Node(Node<T> prev,T data, Node<T> next) {
+          this.data = data;
+          this.next = next;
+          this.prev = prev;
+      }
+  }
