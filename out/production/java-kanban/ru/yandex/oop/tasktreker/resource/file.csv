@@ -7,3 +7,4 @@ id,type,name,status,description,epic
 3,EPICTASK,Купить квартиру,IN_PROGRESS,улучшить жилищьные условия
 4,EPICTASK,Сходить в магазин,NEW,Купить продукты
 
+6,5,4,3,2,1,

@@ -11,7 +11,10 @@ import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,7 +26,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static String file = "src/ru/yandex/oop/tasktreker/resource/file.csv";
 
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+
+
 
     public FileBackedTasksManager() {
         super();
@@ -35,9 +39,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args){
         TaskManager manager = new FileBackedTasksManager();
-        HistoryManager historyManager = manager.getHistoryManager();
 
-        System.out.println("**********************************TASK*************************************");
+
+       //**********************************TASK*************************************;
         Task task1 = new Task("Тренировка", "день грудь-плечи", TaskType.TASK);
         Task task2 = new Task("Тренировка", "день ноги", TaskType.TASK);
         manager.createTaskAndReturnId(task1);
@@ -45,13 +49,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         task1.setStatus(TaskStatus.IN_PROGRESS);
 
 
-        System.out.println("**********************************EPIC*************************************");
+//        **********************************EPIC*************************************
         EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия", TaskType.EPICTASK);
         EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты", TaskType.EPICTASK);
         epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
         epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
 
-        System.out.println("**********************************SUBTASK**********************************");
+//       **********************************SUBTASK**********************************
         SubTask subTask1 = new SubTask("Деньги", "Накопить бабло",  TaskType.SUBTASK, epicTask1.getId());
         SubTask subTask2 = new SubTask("Квартира", "Найти хату",  TaskType.SUBTASK, epicTask1.getId());
         SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicTask1.getId());
@@ -74,11 +78,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         t1 = manager.getAnyTask(5);
         t1 = manager.getAnyTask(5);
 
-        List<Task> history = historyManager.getHistory();
-        history.forEach(System.out::println);
+
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
+
         FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
         try {
             String string = Files.readString(Path.of(file.getPath()));
@@ -114,10 +118,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             writer.write("\n");
 
-//            for (Task task : historyManager.getHistory()) {
-//                writer.write(task.getId() + ",");
-//            }
-            writer.write(historyToString(historyManager));
+            writer.write(historyToString(getHistoryManager()));
 
 
         } catch (IOException e) {
@@ -163,7 +164,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             String desc = element[4];
             Task task = null;
 
-            if (element.length == 6) { // если количество элементов = 6 то это сабтаск
+            if (element.length == 6) { // если количество элементов = 6, то это сабтаск
                 int idEpic = Integer.parseInt(element[5]); // создали доп поле эпикайди через парсинт
                 task = new SubTask(name, desc, taskType, idEpic); // создали новую сабтаску
                 task.setStatus(taskStatus); // присвоили статус новой сабтаске
@@ -230,69 +231,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public int createTaskAndReturnId(Task task) {
-        return super.createTaskAndReturnId(task);
-
-    }
-
-    @Override
-    public List<SubTask> getListSubtask(int id) {
-        return super.getListSubtask(id);
-
-    }
-
-    @Override
     public void changeStatus(int epicId) {
         super.changeStatus(epicId);
         save();
     }
 
-    @Override
-    public int getNextId() {
-        return super.getNextId();
-    }
 
-    @Override
-    public HistoryManager getHistoryManager() {
-        HistoryManager HistoryManager = super.getHistoryManager();
-        save();
-        return HistoryManager;
-    }
-
-    @Override
-    public Task getAnyTask(int id) {
-        return super.getAnyTask(id);
-    }
-
-    @Override
-    public Task getTask(int id) {
-        return super.getTask(id);
-    }
-
-    @Override
-    public SubTask getSubtask(int id) {
-
-        return super.getSubtask(id);
-
-    }
-
-    @Override
-    public EpicTask getEpic(int id) {
-        return super.getEpic(id);
-    }
-
-    @Override
-    public Map<Integer, Task> getTaskMap() {
-        return super.getTaskMap();
-    }
-
-    @Override
-    public Map<Integer, SubTask> getSubTaskMap() {
-        return super.getSubTaskMap();
-    }
-
-    @Override
-    public Map<Integer, EpicTask> getEpicTaskMap() {
-        return super.getEpicTaskMap();
-    }
 }
