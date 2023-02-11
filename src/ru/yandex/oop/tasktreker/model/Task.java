@@ -14,19 +14,19 @@ public class Task {
     public Task (){
     }
 
-    public Task(String name, String description,  TaskType taskType) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
-        this.taskType = taskType;
+        this.taskType = TaskType.TASK;
     }
 
-    public Task(String name, int id, String description, TaskStatus taskStatus, TaskType taskType) {
+    public Task(String name, int id, String description, TaskStatus taskStatus) {
         this.name = name;
         this.id = id;
         this.description = description;
         this.taskStatus = taskStatus;
-        this.taskType = taskType;
+        this.taskType = TaskType.TASK;
     }
 
     @Override

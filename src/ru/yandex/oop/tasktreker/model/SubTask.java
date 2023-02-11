@@ -6,8 +6,9 @@ import ru.yandex.oop.tasktreker.model.enums.TaskType;
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, TaskType taskType, int epicId) {
-        super(name, description, taskType);
+    public SubTask(String name, String description, int epicId) {
+        super(name, description);
+        this.taskType = TaskType.SUBTASK;
         this.epicId = epicId;
     }
 

@@ -9,6 +9,7 @@ import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
+import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,100 +25,34 @@ import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private static String file = "src/ru/yandex/oop/tasktreker/resource/file.csv";
-
+    private static File file;
 
     public FileBackedTasksManager() {
         super();
     }
 
+    // как сделать конструктор для loadFromFile
     public FileBackedTasksManager(String path) {
-
-    }// как сделать конструктор для loadFromFile
-
-
-    public static void main(String[] args) {
-        TaskManager manager = new FileBackedTasksManager();
-        HistoryManager historyManager = manager.getHistoryManager();
-
-
-        //**********************************TASK*************************************;
-        Task task1 = new Task("Тренировка", "день грудь-плечи", TaskType.TASK);
-        Task task2 = new Task("Тренировка", "день ноги", TaskType.TASK);
-        manager.createTaskAndReturnId(task1);
-        manager.createTaskAndReturnId(task2);
-        task1.setStatus(TaskStatus.IN_PROGRESS);
-
-
-//        **********************************EPIC*************************************
-        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия", TaskType.EPICTASK);
-        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты", TaskType.EPICTASK);
-        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
-        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
-
-//       **********************************SUBTASK**********************************
-        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", TaskType.SUBTASK, epicTask1.getId());
-        SubTask subTask2 = new SubTask("Квартира", "Найти хату", TaskType.SUBTASK, epicTask1.getId());
-        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", TaskType.SUBTASK, epicTask1.getId());
-        subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        subTask2.setStatus(TaskStatus.DONE);
-        subTask3.setStatus(TaskStatus.NEW);
-        manager.createTaskAndReturnId(subTask1);
-        manager.createTaskAndReturnId(subTask2);
-        manager.createTaskAndReturnId(subTask3);
-
-        Task t1 = manager.getAnyTask(4);
-        Task t2 = manager.getAnyTask(2);
-        Task t3 = manager.getAnyTask(1);
-
-
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-
-
-        List<Task> history = historyManager.getHistory();
-
-        history.forEach(System.out::println);
-
-    }
-
-    public static FileBackedTasksManager loadFromFile(File file) {
-
-        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
-        try {
-            String string = Files.readString(Path.of(file.getPath()));
-            String[] lines = string.split(System.lineSeparator());
-            for (int i = 1; i < lines.length; i++) {
-                if (!lines[i].isBlank() && i != lines.length - 1) {
-                    fromFile.createTaskAndReturnId(fromFile.fromString(lines[i]));
-                }
-                if (i == lines.length - 1) {
-                    List<Integer> historyList = historyFromString(lines[lines.length - 1]);
-                    for (int id : historyList) {
-                        fromFile.getHistoryManager().add(fromFile.getAnyTask(id));
-                    }
-                }
-            }
-            return fromFile;
-        } catch (IOException e) {
-            throw new ManagerLoadException("Не загрузить  данные " + "\n ошибка", e.getCause());
-        }
+        file = new File(path);
     }
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("id,type,name,status,description,epic" + "\n");
+            writer.write("id,type,name,status,description,epic");
+            writer.newLine();
             for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
-                writer.write(toString(pair.getValue()) + "\n");
+                writer.write(toString(pair.getValue()));
+                writer.newLine();
             }
             for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
-                writer.write(toString(pair.getValue()) + "\n");
+                writer.write(toString(pair.getValue()));
+                writer.newLine();
             }
             for (Map.Entry<Integer, EpicTask> pair : getEpicTaskMap().entrySet()) {
-                writer.write(toString(pair.getValue()) + "\n");
+                writer.write(toString(pair.getValue()));
+                writer.newLine();
             }
-            writer.write("\n");
+            writer.newLine();
 
             writer.write(historyToString(getHistoryManager()));
 
@@ -166,16 +102,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         if (element.length == 6) { // если количество элементов = 6, то это сабтаск
             int idEpic = Integer.parseInt(element[5]); // создали доп поле эпикайди через парсинт
-            task = new SubTask(name, desc, taskType, idEpic); // создали новую сабтаску
+            task = new SubTask(name, desc, idEpic); // создали новую сабтаску
             task.setStatus(taskStatus); // присвоили статус новой сабтаске
             task.setId(id); // установили айди сабтаске
         } else {
 
             if (taskType == TaskType.TASK) { // если поле таски таска, то это таска
-                task = new Task(name, id, desc, taskStatus, taskType); // создали новую таску
+                task = new Task(name, id, desc, taskStatus); // создали новую таску
 
             } else { // иначе это эпиктаск
-                task = new EpicTask(name, desc, taskType);// создали новый эпик таск
+                task = new EpicTask(name, desc);// создали новый эпик таск
                 task.setId(id);// присвоили айди
             }
         }
@@ -236,5 +172,49 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
+    public static void main(String[] args) {
+        TaskManager manager = Managers.loadFromFile(new File("file.csv"));
+        HistoryManager historyManager = manager.getHistoryManager();
 
+
+        //**********************************TASK*************************************;
+        Task task1 = new Task("Тренировка", "день грудь-плечи");
+        Task task2 = new Task("Тренировка", "день ноги");
+        manager.createTaskAndReturnId(task1);
+        manager.createTaskAndReturnId(task2);
+        task1.setStatus(TaskStatus.IN_PROGRESS);
+
+
+//        **********************************EPIC*************************************
+        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия");
+        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты");
+        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
+        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
+
+//       **********************************SUBTASK**********************************
+        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId());
+        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId());
+        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId());
+        subTask1.setStatus(TaskStatus.IN_PROGRESS);
+        subTask2.setStatus(TaskStatus.DONE);
+        subTask3.setStatus(TaskStatus.NEW);
+        manager.createTaskAndReturnId(subTask1);
+        manager.createTaskAndReturnId(subTask2);
+        manager.createTaskAndReturnId(subTask3);
+
+        Task t1 = manager.getAnyTask(4);
+        Task t2 = manager.getAnyTask(2);
+        Task t3 = manager.getAnyTask(1);
+
+
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+        t1 = manager.getAnyTask(5);
+
+
+        List<Task> history = historyManager.getHistory();
+
+        history.forEach(System.out::println);
+
+    }
 }
