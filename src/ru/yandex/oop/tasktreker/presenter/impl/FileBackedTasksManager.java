@@ -1,6 +1,5 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
-import ru.yandex.oop.tasktreker.exception.ManagerLoadException;
 import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
@@ -15,9 +14,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +22,7 @@ import java.util.Map;
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static File file;
+
 
     public FileBackedTasksManager() {
         super();
@@ -53,18 +50,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 writer.newLine();
             }
             writer.newLine();
-
             writer.write(historyToString(getHistoryManager()));
-
-
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось сохранит данные " + "\n ошибка", e.getCause());
         }
     }
 
+//    public void addTaskToFileBackedTasksManager(Task task) {
+//        createTaskAndReturnId(task);
+//    }
+
     public String toString(Task task) {
-
-
         if (task instanceof SubTask) {
             return task.getId() + "," + task.getTaskType() + "," + task.getName() + "," + task.getStatus() + ","
                     + task.getDescription() + "," + ((SubTask) task).getEpicId();
@@ -75,7 +71,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public Task fromString(String str) {
-
         String[] element = str.split(",");// разбили строку по запятой
         int id = Integer.parseInt(element[0]);//создали поле айди через парсинт
         TaskType taskType; //создали поле тасктайп

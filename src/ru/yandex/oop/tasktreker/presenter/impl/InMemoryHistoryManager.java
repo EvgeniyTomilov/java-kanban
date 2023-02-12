@@ -22,8 +22,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             historyTaskMap.put(task.getId(), history.listLast(task));
         }
-
-
     }
 
     @Override

@@ -12,9 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Managers {
 
@@ -32,30 +30,59 @@ public class Managers {
         return loadFromFile(file);
     }
 
+
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
-        BufferedReader reader;
-        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = null;
+        StringBuilder stringFile = new StringBuilder();
         try {
             reader = new BufferedReader(new FileReader(file));
             while (reader.ready()) {
-                sb.append(reader.readLine());
+                stringFile.append(reader.readLine());
             }
-            String[] lines = sb.toString().split(System.lineSeparator());
+            String[] lines = stringFile.toString().split(System.lineSeparator());
             for (int i = 1; i < lines.length; i++) {
                 if (!lines[i].isBlank() && i != lines.length - 1) {
-                    switch (fromFile.fromString(lines[i]).getTaskType()) {
-                        case  TASK -> fromFile.saveTask(fromFile(lines[i]));
-                        case  EPICTASK: -> fromFile.save(fromFile(lines[i]));
-                        case  SUBTASK: -> fromFile.save(fromFile(lines[i]));
+//                    fromFile.addTaskToFileBackedTasksManager(fromFile.fromString(lines[i]));
+                    fromFile.createTaskAndReturnId(fromFile.fromString(lines[i]));
+                }
+                if (i == lines.length - 1) {
+                    List<Integer> history = FileBackedTasksManager.historyFromString(lines[i]);
+                    for (Integer taskId : history) {
+                        fromFile.getHistoryManager().add(fromFile.getAnyTask(taskId));
                     }
                 }
             }
         } catch (IOException e) {
-            throw new ManagerLoadException("Не загрузить  данные " + "\n ошибка",e.getCause());
+            throw new ManagerLoadException("ERROR");
         }
-        return null;
+        return fromFile;
     }
+
+//    public static FileBackedTasksManager loadFromFile(File file) {
+//        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
+//        BufferedReader reader;
+//        StringBuilder sb = new StringBuilder();
+//        try {
+//            reader = new BufferedReader(new FileReader(file));
+//            while (reader.ready()) {
+//                sb.append(reader.readLine());
+//            }
+//            String[] lines = sb.toString().split(System.lineSeparator());
+//            for (int i = 1; i < lines.length; i++) {
+//                if (!lines[i].isBlank() && i != lines.length - 1) {
+//                    switch (fromFile.fromString(lines[i]).getTaskType()) {
+//                        case  TASK -> fromFile.saveTask(fromFile(lines[i]));
+//                        case  EPICTASK: -> fromFile.saveEpic(fromFile(lines[i]));
+//                        case  SUBTASK: -> fromFile.saveSubTask(fromFile(lines[i]));
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new ManagerLoadException("Не загрузить  данные " + "\n ошибка",e.getCause());
+//        }
+//        return null;
+//    }
 }
 
 
