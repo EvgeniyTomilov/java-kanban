@@ -23,7 +23,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static File file;
 
-
     public FileBackedTasksManager() {
         super();
     }
@@ -31,6 +30,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     // как сделать конструктор для loadFromFile
     public FileBackedTasksManager(String path) {
         file = new File(path);
+    }
+
+    public static File getFile() {
+        return file;
     }
 
     private void save() {
@@ -167,49 +170,65 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> list = new ArrayList<>();
+        for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        for (Map.Entry<Integer, EpicTask> pair : getEpicTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
-        TaskManager manager = Managers.loadFromFile(new File("file.csv"));
+        TaskManager manager = Managers.loadFromFile(new File("C:\\code\\java-kanban\\resource\\file.csv"));
         HistoryManager historyManager = manager.getHistoryManager();
 
-
-        //**********************************TASK*************************************;
-        Task task1 = new Task("Тренировка", "день грудь-плечи");
-        Task task2 = new Task("Тренировка", "день ноги");
-        manager.createTaskAndReturnId(task1);
-        manager.createTaskAndReturnId(task2);
-        task1.setStatus(TaskStatus.IN_PROGRESS);
-
-
-//        **********************************EPIC*************************************
-        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия");
-        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты");
-        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
-        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
-
-//       **********************************SUBTASK**********************************
-        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId());
-        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId());
-        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId());
-        subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        subTask2.setStatus(TaskStatus.DONE);
-        subTask3.setStatus(TaskStatus.NEW);
-        manager.createTaskAndReturnId(subTask1);
-        manager.createTaskAndReturnId(subTask2);
-        manager.createTaskAndReturnId(subTask3);
-
-        Task t1 = manager.getAnyTask(4);
-        Task t2 = manager.getAnyTask(2);
-        Task t3 = manager.getAnyTask(1);
-
-
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-
-
-        List<Task> history = historyManager.getHistory();
-
-        history.forEach(System.out::println);
+        manager.getAllTasks().forEach(System.out::println);
+//
+//        //**********************************TASK*************************************;
+//        Task task1 = new Task("Тренировка", "день грудь-плечи");
+//        Task task2 = new Task("Тренировка", "день ноги");
+//        manager.createTaskAndReturnId(task1);
+//        manager.createTaskAndReturnId(task2);
+//        task1.setStatus(TaskStatus.IN_PROGRESS);
+//
+//
+////        **********************************EPIC*************************************
+//        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия");
+//        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты");
+//        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
+//        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
+//
+////       **********************************SUBTASK**********************************
+//        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId());
+//        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId());
+//        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId());
+//        subTask1.setStatus(TaskStatus.IN_PROGRESS);
+//        subTask2.setStatus(TaskStatus.DONE);
+//        subTask3.setStatus(TaskStatus.NEW);
+//        manager.createTaskAndReturnId(subTask1);
+//        manager.createTaskAndReturnId(subTask2);
+//        manager.createTaskAndReturnId(subTask3);
+//
+//        Task t1 = manager.getAnyTask(4);
+//        Task t2 = manager.getAnyTask(2);
+//        Task t3 = manager.getAnyTask(1);
+//
+//
+//        t1 = manager.getAnyTask(5);
+//        t1 = manager.getAnyTask(5);
+//        t1 = manager.getAnyTask(5);
+//
+//
+//        List<Task> history = historyManager.getHistory();
+//
+//        history.forEach(System.out::println);
 
     }
 }

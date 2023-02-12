@@ -43,5 +43,5 @@ public interface TaskManager {
 
     Task getAnyTask(int id);
 
-
+    List<Task> getAllTasks();
 }

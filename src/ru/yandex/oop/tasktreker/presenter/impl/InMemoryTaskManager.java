@@ -203,7 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (task instanceof SubTask) {
             this.subTaskMap.put(keyId, (SubTask) task);
             int epicIdOfSubtask = subTaskMap.get(keyId).getEpicId();
-            epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId);
+            epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId); // здесь падаем
             changeStatus(epicTaskMap.get(epicIdOfSubtask).getId());
             historyManager.add(task);
         } else if (task instanceof EpicTask) {
@@ -322,6 +322,21 @@ public class InMemoryTaskManager implements TaskManager {
         EpicTask task = epicTaskMap.get(id);
         historyManager.add(task);
         return task;
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> list = new ArrayList<>();
+        for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        for (Map.Entry<Integer, EpicTask> pair : getEpicTaskMap().entrySet()) {
+            list.add(pair.getValue());
+        }
+        return list;
     }
 
     @Override
