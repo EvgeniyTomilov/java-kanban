@@ -226,7 +226,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        TaskManager manager = loadFromFile(new File("C:\\code\\java-kanban\\resource\\file.csv"));
+        TaskManager manager = loadFromFile(new File("resource\\file.csv"));
         HistoryManager historyManager = manager.getHistoryManager();
 
         manager.getAllTasks().forEach(System.out::println);
