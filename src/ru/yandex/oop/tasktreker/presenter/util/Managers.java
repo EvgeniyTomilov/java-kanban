@@ -1,6 +1,8 @@
 package ru.yandex.oop.tasktreker.presenter.util;
 
 import ru.yandex.oop.tasktreker.exception.ManagerLoadException;
+import ru.yandex.oop.tasktreker.model.EpicTask;
+import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
@@ -29,53 +31,53 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static TaskManager getFileBackedTaskManager() {
-        return loadFromFile(file);
-    }
+//    public static TaskManager getFileBackedTaskManager() {
+//        return loadFromFile(file);
+//    }
 
 
-    public static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
-        BufferedReader reader = null;
-        StringBuilder stringFile = new StringBuilder();
-        try {
-//            reader = new BufferedReader(new FileReader(file));
-            reader = new BufferedReader(new FileReader(FileBackedTasksManager.getFile()));
-            while (reader.ready()) {
-                stringFile.append(reader.readLine());
-                stringFile.append(System.lineSeparator());
-            }
-            String[] lines = stringFile.toString().split(System.lineSeparator());
-            List<Task> tasks = new ArrayList<>();
-
-            for (int i = 1; i < lines.length; i++) {
-                if (!lines[i].isBlank() && i != lines.length - 1) {
-                    tasks.add(fromFile.fromString(lines[i]));
-                }
-            }
-            // сложили эпики
-            for (int i = 0; i < tasks.size(); i++) {
-                if (tasks.get(i).getTaskType() == TaskType.EPICTASK) {
-                    fromFile.createTaskAndReturnId(tasks.get(i));
-                }
-            }
-
-            for (int i = 0; i < tasks.size(); i++) {
-                if (tasks.get(i).getTaskType() != TaskType.EPICTASK) {
-                    fromFile.createTaskAndReturnId(tasks.get(i));
-                }
-            }
-            List<Integer> history = FileBackedTasksManager.historyFromString(lines[lines.length - 1]);
-            if (history.size() != 0) {
-                for (Integer taskId : history) {
-                        fromFile.getHistoryManager().add(fromFile.getAnyTask(taskId));
-                }
-            }
-        } catch (IOException e) {
-            throw new ManagerLoadException("ERROR");
-        }
-        return fromFile;
-    }
+//    public static FileBackedTasksManager loadFromFile(File file) {
+//        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
+//        StringBuilder stringFile = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new FileReader(FileBackedTasksManager.getFile()))){
+//            while (reader.ready()) {
+//                stringFile.append(reader.readLine());
+//                stringFile.append(System.lineSeparator());
+//            }
+//            String[] lines = stringFile.toString().split(System.lineSeparator());
+//            List<Task> tasks = new ArrayList<>();
+//
+//            for (int i = 1; i < lines.length; i++) {
+//                if (!lines[i].isBlank() && i != lines.length - 1) {
+//                    tasks.add(fromFile.fromString(lines[i]));
+//                }
+//            }
+//            // сложили эпики
+//            for (int i = 0; i < tasks.size(); i++) {
+//                if (tasks.get(i).getTaskType() == TaskType.EPICTASK) {
+//                    fromFile.getEpicTaskMap().put(tasks.get(i).getId(), (EpicTask) tasks.get(i));
+//                }
+//            }
+//
+//            for (int i = 0; i < tasks.size(); i++) {
+//                if (tasks.get(i).getTaskType() == TaskType.SUBTASK) {
+//                    fromFile.getSubTaskMap().put(tasks.get(i).getId(), (SubTask) tasks.get(i));
+//                }
+//                if (tasks.get(i).getTaskType() == TaskType.TASK) {
+//                    fromFile.getTaskMap().put(tasks.get(i).getId(), tasks.get(i));
+//                }
+//            }
+//            List<Integer> history = FileBackedTasksManager.historyFromString(lines[lines.length - 1]);
+//            if (history.size() != 0) {
+//                for (Integer taskId : history) {
+//                        fromFile.getHistoryManager().add(fromFile.getAnyTask(taskId));
+//                }
+//            }
+//        } catch (IOException e) {
+//            throw new ManagerLoadException("ERROR");
+//        }
+//        return fromFile;
+//    }
 
 //    public static FileBackedTasksManager loadFromFile(File file) {
 //        FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
