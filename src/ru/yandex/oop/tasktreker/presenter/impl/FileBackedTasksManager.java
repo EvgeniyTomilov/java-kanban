@@ -60,7 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
         StringBuilder stringFile = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FileBackedTasksManager.getFile()))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(FileBackedTasksManager.getFile()))) {
             while (reader.ready()) {
                 stringFile.append(reader.readLine());
                 stringFile.append(System.lineSeparator());
@@ -116,16 +116,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public Task fromString(String str) {
         String[] element = str.split(",");// разбили строку по запятой
         int id = Integer.parseInt(element[0]);//создали поле айди через парсинт
-        TaskType taskType; //создали поле тасктайп
-        if (TaskType.valueOf(element[1]).equals(TaskType.TASK)) { // сравнили значение в массиве со значением из энама через тустринг
-            taskType = TaskType.TASK; // присвоили тасктайпу значение по энаму
-        } else if (TaskType.valueOf(element[1]).equals(TaskType.SUBTASK)) {
-            taskType = TaskType.SUBTASK;
-        } else if (TaskType.valueOf(element[1]).equals(TaskType.EPICTASK)) {
-            taskType = TaskType.EPICTASK;
-        } else {
-            taskType = null;
-        }
+        TaskType taskType = TaskType.valueOf(element[1]); //создали поле тасктайп
+
+//        if (TaskType.valueOf(element[1]).equals(TaskType.TASK)) { // сравнили значение в массиве со значением из энама через тустринг
+//            taskType = TaskType.TASK; // присвоили тасктайпу значение по энаму
+//        } else if (TaskType.valueOf(element[1]).equals(TaskType.SUBTASK)) {
+//            taskType = TaskType.SUBTASK;
+//        } else if (TaskType.valueOf(element[1]).equals(TaskType.EPICTASK)) {
+//            taskType = TaskType.EPICTASK;
+//        } else {
+//            taskType = null;
+//        }
+
         String name = element[2];
         TaskStatus taskStatus = null; // создали поле таскстатус
         if (element[3].equals(TaskStatus.NEW.toString())) { // сравнили значение в массиве со значением енама через тустринг
