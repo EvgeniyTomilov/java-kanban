@@ -30,6 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
+
     /**
      * методы бизнес-логики
      */
@@ -372,4 +373,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epicTaskMap;
     }
 
+    public void setNextId(int nextId) {
+        this.nextId = nextId;
+    }
 }
