@@ -60,6 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fromFile = new FileBackedTasksManager(file.getPath());
         int taskCount = 0;
+        boolean isContainsHistory = false;
         StringBuilder stringFile = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(FileBackedTasksManager.getFile()))) {
             while (reader.ready()) {
@@ -70,9 +71,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             List<Task> tasks = new ArrayList<>();
 
             for (int i = 1; i < lines.length; i++) {
-                if (!lines[i].isBlank() && i != lines.length - 1) {
-                    tasks.add(fromFile.fromString(lines[i]));
+                if (lines[i].isBlank()) {
+                    if (i < lines.length - 1) {
+                        isContainsHistory = true;
+                    }
+                    break;
                 }
+                tasks.add(fromFile.fromString(lines[i]));
             }
             // сложили эпики
             for (int i = 0; i < tasks.size(); i++) {
@@ -95,11 +100,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
 
             fromFile.setNextId(taskCount);
-
-            List<Integer> history = FileBackedTasksManager.historyFromString(lines[lines.length - 1]);
-            if (history.size() != 0) {
-                for (Integer taskId : history) {
-                    fromFile.getHistoryManager().add(fromFile.getAnyTask(taskId));
+            if (isContainsHistory) {
+                List<Integer> history = FileBackedTasksManager.historyFromString(lines[lines.length - 1]);
+                if (history.size() != 0) {
+                    for (Integer taskId : history) {
+                        fromFile.getHistoryManager().add(fromFile.getAnyTask(taskId));
+                    }
                 }
             }
         } catch (IOException e) {
