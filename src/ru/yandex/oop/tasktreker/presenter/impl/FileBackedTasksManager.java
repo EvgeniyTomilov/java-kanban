@@ -249,6 +249,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
+    public Task getAnyTask(int id) {
+        Task getTask = super.getAnyTask(id);
+        save();
+        return getTask;
+    }
+
+    @Override
     public List<Task> getAllTasks() {
         List<Task> list = new ArrayList<>();
         for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
