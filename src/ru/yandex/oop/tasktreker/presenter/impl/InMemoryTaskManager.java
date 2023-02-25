@@ -204,7 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (task instanceof SubTask) {
             this.subTaskMap.put(keyId, (SubTask) task);
             int epicIdOfSubtask = subTaskMap.get(keyId).getEpicId();
-            epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId); // здесь падаем
+            epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId);
             changeStatus(epicTaskMap.get(epicIdOfSubtask).getId());
 //            historyManager.add(task);
         } else if (task instanceof EpicTask) {
@@ -340,26 +340,26 @@ public class InMemoryTaskManager implements TaskManager {
         return list;
     }
 
-    @Override
-    public Task getTask(int id) { // получить Task
-        Task task = taskMap.get(id); //получает id из taskMap
-        historyManager.add(task); //вызывает historyManager добавляет туда task
-        return task; // возвращает таску
-    }
-
-    @Override
-    public SubTask getSubtask(int id) {
-        SubTask task = subTaskMap.get(id);
-        historyManager.add(task);
-        return task;
-    }
-
-    @Override
-    public EpicTask getEpic(int id) {
-        EpicTask task = epicTaskMap.get(id);
-        historyManager.add(task);
-        return task;
-    }
+//    @Override
+//    public Task getTask(int id) { // получить Task
+//        Task task = taskMap.get(id); //получает id из taskMap
+//        historyManager.add(task); //вызывает historyManager добавляет туда task
+//        return task; // возвращает таску
+//    }
+//
+//    @Override
+//    public SubTask getSubtask(int id) {
+//        SubTask task = subTaskMap.get(id);
+//        historyManager.add(task);
+//        return task;
+//    }
+//
+//    @Override
+//    public EpicTask getEpic(int id) {
+//        EpicTask task = epicTaskMap.get(id);
+//        historyManager.add(task);
+//        return task;
+//    }
 
     public Map<Integer, Task> getTaskMap() {
         return taskMap;

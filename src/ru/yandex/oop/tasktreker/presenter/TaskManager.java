@@ -35,11 +35,11 @@ public interface TaskManager {
 
     int getNextId();
 
-    Task getTask(int id);
-
-    SubTask getSubtask(int id);
-
-    EpicTask getEpic(int id);
+//    Task getTask(int id);
+//
+//    SubTask getSubtask(int id);
+//
+//    EpicTask getEpic(int id);
 
     Task getAnyTask(int id);
 

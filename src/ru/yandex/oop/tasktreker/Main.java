@@ -66,90 +66,13 @@ public class Main {
 //        t1 = manager.getAnyTask(5);
 //
 //
-////       manager.deleteTasksByType(TaskType.SUBTASK);
+//       manager.deleteTasksByType(TaskType.SUBTASK);
 //
 //        List<Task> history = historyManager.getHistory();
 //
 //        history.forEach(System.out::println);
 
 
-
-
-
-//        int id = epicTask1.getId();
-//        int epicId1 = manager.createTaskAndReturnId(epicTask1);
-//
-//
-//        manager.createTaskAndReturnId(subTask1);
-//        manager.createTaskAndReturnId(subTask2);
-//        manager.createTaskAndReturnId(subTask3);
-//
-//        System.out.println(manager.getByIdAndTypeTask(0, TaskType.EPICTASK));
-//        System.out.println(manager.getByIdAndTypeTask(1, TaskType.SUBTASK));
-//        System.out.println(manager.getByIdAndTypeTask(2, TaskType.SUBTASK));
-//        System.out.println(manager.getByIdAndTypeTask(3, TaskType.SUBTASK));
-//
-//        System.out.println("**********************************EPICTASK2**********************************");
-//        EpicTask epicTask2 = new EpicTask("купить продукты", "сходить в магазин", TaskType.EPICTASK);
-//
-//        int epicId2 = manager.createTaskAndReturnId(epicTask2);
-//        System.out.println(manager.getByIdAndTypeTask(4, TaskType.EPICTASK));
-//
-//        Task task01 = new Task();
-//        Task task02 = new Task();
-//        Task task03 = new Task();
-//
-//        manager.createTaskAndReturnId(task01);
-//        manager.getHistoryManager().getHistory().forEach(System.out::println);
-//
-//        manager.createTaskAndReturnId(task02);
-//        manager.getHistoryManager().getHistory().forEach(System.out::println);
-//
-//        manager.createTaskAndReturnId(task03);
-//        manager.getHistoryManager().getHistory().forEach(System.out::println);
-
-
-//        System.out.println("**********************************SUBTASK(Х1)**********************************");
-//        SubTask subTask3 = new SubTask("Купить мясо", "купить 2 кг свинины", TaskStatus.IN_PROGRESS, TaskType.SUBTASK, epicId2);
-//
-//        manager.createTaskAndReturnId(subTask3);
-//
-//        System.out.println(manager.getByIdAndTypeTask(6, TaskType.SUBTASK));
-//
-//        System.out.println("---History---");
-//        manager.getHistoryManager().getHistory().forEach(System.out::println); // напечатать все таски из истории
-//        System.out.println("---History---");
-//
-//        System.out.println("**********************************EPICTASK2(1SubTask)**********************************");
-//        System.out.println(manager.getByIdAndTypeTask(5, TaskType.EPICTASK));
-//
-//
-//        System.out.println("**********************************UPDETEID(TASK)**********************************");
-//        Task updateTask0 = new Task("Тренировка", "день грудь-плечи", TaskStatus.IN_PROGRESS, TaskType.TASK);
-//
-//        InMemoryTaskManager.updateTask(0, updateTask0, manager);
-//
-//
-//        System.out.println(manager.getByIdAndTypeTask(0, TaskType.TASK));
-//
-//        System.out.println("---History---");
-//        manager.getHistoryManager().getHistory().forEach(System.out::println); // напечатать все таски из истории
-//        System.out.println("---History---");
-//
-//        System.out.println("**********************************DELETEID(TASK)**********************************");
-//        System.out.println(manager.deleteByIdAndTypeTask(0, TaskType.TASK));
-//        System.out.println(manager.getTaskByType(TaskType.TASK));
-//
-//
-//        System.out.println("**********************************DELETEID(SUBTASK)**********************************");
-//        manager.deleteByIdAndTypeTask(3, TaskType.SUBTASK);
-//        System.out.println(manager.getByIdAndTypeTask(3, TaskType.SUBTASK));
-//        System.out.println(manager.getByIdAndTypeTask(2, TaskType.EPICTASK));
-//
-//
-//        System.out.println("**********************************DELETEID(EPICTASK2)**********************************");
-//        System.out.println(manager.deleteByIdAndTypeTask(5, TaskType.EPICTASK));
-//        System.out.println(manager.getTaskByType(TaskType.SUBTASK));
         System.out.println("FIN");
     }
 

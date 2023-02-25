@@ -129,27 +129,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String[] element = str.split(",");// разбили строку по запятой
         int id = Integer.parseInt(element[0]);//создали поле айди через парсинт
         TaskType taskType = TaskType.valueOf(element[1]); //создали поле тасктайп
-
-//        if (TaskType.valueOf(element[1]).equals(TaskType.TASK)) { // сравнили значение в массиве со значением из энама через тустринг
-//            taskType = TaskType.TASK; // присвоили тасктайпу значение по энаму
-//        } else if (TaskType.valueOf(element[1]).equals(TaskType.SUBTASK)) {
-//            taskType = TaskType.SUBTASK;
-//        } else if (TaskType.valueOf(element[1]).equals(TaskType.EPICTASK)) {
-//            taskType = TaskType.EPICTASK;
-//        } else {
-//            taskType = null;
-//        }
-
         String name = element[2];
         TaskStatus taskStatus = TaskStatus.valueOf(element[3]);
-//        TaskStatus taskStatus = null; // создали поле таскстатус
-//        if (element[3].equals(TaskStatus.NEW.toString())) { // сравнили значение в массиве со значением енама через тустринг
-//            taskStatus = TaskStatus.NEW;  // присвоили таскстатусу значение по энаму
-//        } else if (element[3].equals(TaskStatus.IN_PROGRESS.toString())) {
-//            taskStatus = TaskStatus.IN_PROGRESS;
-//        } else if (element[3].equals(TaskStatus.DONE.toString())) {
-//            taskStatus = TaskStatus.DONE;
-//        }
         String desc = element[4];
         Task task = null;
 
@@ -187,12 +168,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
         return stringBuilder.toString();
     }
-//
-//       for (Task task : tasks) {
-//            stringBuilder.append(task.getId());
-//            stringBuilder.append(",");
-//        }//достали айди из таски сложили их через ","
-//        return stringBuilder.toString(); //вернули стринговое значение стрингбилдера
 
 
     public static List<Integer> historyFromString(String str) {
@@ -207,11 +182,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             list.add(Integer.parseInt(str));
         }
         return list;
-//        String[] element = str.split(",");
-//        for (int i = 0; i < element.length; i++) {
-//            list.add(Integer.parseInt(element[i]));// добавили элементы массива в лист
-//        }
-//        return list;
     }
 
     @Override
@@ -271,7 +241,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        TaskManager manager = loadFromFile(new File("resource\\file.csv"));
+        TaskManager manager = new InMemoryTaskManager();//loadFromFile(new File("resource\\file.csv"));
         HistoryManager historyManager = manager.getHistoryManager();
 
         manager.getAllTasks().forEach(System.out::println);
