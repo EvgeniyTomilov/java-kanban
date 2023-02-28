@@ -340,26 +340,7 @@ public class InMemoryTaskManager implements TaskManager {
         return list;
     }
 
-//    @Override
-//    public Task getTask(int id) { // получить Task
-//        Task task = taskMap.get(id); //получает id из taskMap
-//        historyManager.add(task); //вызывает historyManager добавляет туда task
-//        return task; // возвращает таску
-//    }
-//
-//    @Override
-//    public SubTask getSubtask(int id) {
-//        SubTask task = subTaskMap.get(id);
-//        historyManager.add(task);
-//        return task;
-//    }
-//
-//    @Override
-//    public EpicTask getEpic(int id) {
-//        EpicTask task = epicTaskMap.get(id);
-//        historyManager.add(task);
-//        return task;
-//    }
+
 
     public Map<Integer, Task> getTaskMap() {
         return taskMap;
