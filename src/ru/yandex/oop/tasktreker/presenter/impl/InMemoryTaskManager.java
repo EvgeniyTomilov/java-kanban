@@ -206,14 +206,12 @@ public class InMemoryTaskManager implements TaskManager {
             int epicIdOfSubtask = subTaskMap.get(keyId).getEpicId();
             epicTaskMap.get(epicIdOfSubtask).addSubTaskId(keyId);
             changeStatus(epicTaskMap.get(epicIdOfSubtask).getId());
-//            historyManager.add(task);
         } else if (task instanceof EpicTask) {
             this.epicTaskMap.put(keyId, (EpicTask) task);
-//            historyManager.add(task);
         } else {
             this.taskMap.put(keyId, task);
-//            historyManager.add(task);
         }
+        historyManager.add(task);
         return keyId;
     }
 
@@ -307,7 +305,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-    // уточнить можно ли так оставить
+
     @Override
     public Task getAnyTask(int id) {
         if (taskMap.containsKey(id)) {

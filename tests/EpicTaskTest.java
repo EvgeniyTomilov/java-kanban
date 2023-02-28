@@ -29,10 +29,8 @@ class EpicTaskTest {
     public void addNewEpicTaskWithNewSubTask() { //Все подзадачи со статусом NEW
         SubTask subTask1 = new SubTask("subTask1 epicTask", "description test subTask1", epicTask1.getId());
         SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask2", epicTask1.getId());
-
         subTask1.setStatus(TaskStatus.NEW);
         subTask2.setStatus(TaskStatus.NEW);
-
         taskManager.createTaskAndReturnId(subTask1);
         taskManager.createTaskAndReturnId(subTask2);
 
@@ -43,10 +41,8 @@ class EpicTaskTest {
     public void addNewEpicTaskWithDoneSubTask() { //Все подзадачи со статусом DONE
         SubTask subTask1 = new SubTask("subTask1 epicTask", "description test subTask1", epicTask1.getId());
         SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask2", epicTask1.getId());
-
         subTask1.setStatus(TaskStatus.DONE);
         subTask2.setStatus(TaskStatus.DONE);
-
         taskManager.createTaskAndReturnId(subTask1);
         taskManager.createTaskAndReturnId(subTask2);
 
@@ -57,10 +53,8 @@ class EpicTaskTest {
     public void addNewEpicTaskWithDoneAndNewSubTask() { //Подзадачи со статусами NEW и DONE
         SubTask subTask1 = new SubTask("subTask1 epicTask", "description test subTask1", epicTask1.getId());
         SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask2", epicTask1.getId());
-
         subTask1.setStatus(TaskStatus.DONE);
         subTask2.setStatus(TaskStatus.NEW);
-
         taskManager.createTaskAndReturnId(subTask1);
         taskManager.createTaskAndReturnId(subTask2);
 
@@ -71,10 +65,8 @@ class EpicTaskTest {
     public void addNewEpicTaskWithInProgressSubTask() { //Подзадачи со статусом IN_PROGRESS
         SubTask subTask1 = new SubTask("subTask1 epicTask", "description test subTask1", epicTask1.getId());
         SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask2", epicTask1.getId());
-
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
         subTask2.setStatus(TaskStatus.IN_PROGRESS);
-
         taskManager.createTaskAndReturnId(subTask1);
         taskManager.createTaskAndReturnId(subTask2);
 
