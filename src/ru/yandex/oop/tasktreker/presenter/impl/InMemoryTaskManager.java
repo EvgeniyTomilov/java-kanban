@@ -312,15 +312,16 @@ public class InMemoryTaskManager implements TaskManager {
             Task task = taskMap.get(id);
             historyManager.add(task);
             return task;
-        }
-        if (subTaskMap.containsKey(id)) {
+        }else if (subTaskMap.containsKey(id)) {
             SubTask task = subTaskMap.get(id);
             historyManager.add(task);
             return task;
+        }else if (epicTaskMap.containsKey(id)) {
+            EpicTask task = epicTaskMap.get(id);
+            historyManager.add(task);
+            return task;
         }
-        EpicTask task = epicTaskMap.get(id);
-        historyManager.add(task);
-        return task;
+        return null;
     }
 
     @Override
