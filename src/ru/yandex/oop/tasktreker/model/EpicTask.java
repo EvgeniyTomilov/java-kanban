@@ -3,51 +3,68 @@ package ru.yandex.oop.tasktreker.model;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EpicTask extends Task {
 
-    private List<Integer> subTasksId;
+    private List<SubTask> subTasks;
 
     public EpicTask(String name, String description) {
         super(name, description);
         this.taskType = TaskType.EPICTASK;
-        this.subTasksId = new ArrayList<>();
+        this.subTasks = new ArrayList<>();
     }
 
-
-    public List<Integer> getSubTaskIds() {
-        return subTasksId;
+    public Optional<LocalDateTime> getEpicStartTime() {
+        return subTasks.stream()
+                .filter(Objects::nonNull)
+                .map(SubTask::getStartTime)
+                .min(Comparator.naturalOrder());
     }
 
+    public Optional<LocalDateTime> getEpicEndTime() {
+        return subTasks.stream()
+                .filter(Objects::nonNull)
+                .map(SubTask::getStartTime)
+                .max(Comparator.naturalOrder());
+    }
+
+    @Override
+    public Duration getDuration() {
+        return Duration.ofMinutes(subTasks.stream().map(SubTask::getDuration).mapToLong(Duration::toMinutes).sum());
+    }
+
+    public List<SubTask> getSubTasks() {
+        return subTasks;
+    }
     public void removeSubTaskId(Integer subTaskId) {
-        subTasksId.remove(subTaskId);
+        subTasks.remove(subTaskId);
     }
-
     public void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
-
-    public void addSubTaskId(int subTaskId) {
-        subTasksId.add(subTaskId);
+    public void addSubTask(SubTask subTask) {
+        subTasks.add(subTask);
     }
-
-    public void cLearAllSubTasksId() {
-        subTasksId.clear();
+    public void deleteAllSubtasks() {
+        subTasks.clear();
     }
 
     @Override
     public String toString() {
         return "EpicTask{" +
-                "subTasksId=" + subTasksId +
+                "subTasks=" + subTasks +
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 ", description='" + description + '\'' +
-                ", status=" + taskStatus +
+                ", taskStatus=" + taskStatus +
                 ", taskType=" + taskType +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
-
 }
 

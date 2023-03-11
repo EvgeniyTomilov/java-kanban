@@ -5,6 +5,7 @@ import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
+import ru.yandex.oop.tasktreker.model.TaskStartTimeComparator;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
@@ -12,10 +13,7 @@ import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -25,7 +23,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super();
     }
 
-    // как сделать конструктор для loadFromFile
     public FileBackedTasksManager(String path) {
         file = new File(path);
     }
@@ -33,6 +30,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static File getFile() {
         return file;
     }
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
+        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
+        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
+        return sortedByStartTimeTasksSet;
+    }
+
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {

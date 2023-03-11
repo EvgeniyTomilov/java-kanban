@@ -4,12 +4,17 @@ package ru.yandex.oop.tasktreker.model;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     protected String name;
     protected int id;
     protected String description;
     protected TaskStatus taskStatus;
     protected TaskType taskType;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
     public Task (){
     }
@@ -29,15 +34,24 @@ public class Task {
         this.taskType = TaskType.TASK;
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                ", description='" + description + '\'' +
-                ", status=" + taskStatus +
-                ", taskType=" + taskType +
-                '}';
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     public String getName() {
@@ -71,5 +85,16 @@ public class Task {
         this.taskType = taskType;
     }
 
-
+    @Override
+    public String toString() {
+        return "Task{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", description='" + description + '\'' +
+                ", taskStatus=" + taskStatus +
+                ", taskType=" + taskType +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                '}';
+    }
 }
