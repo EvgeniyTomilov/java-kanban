@@ -246,7 +246,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         manager.getAllTasks().forEach(System.out::println);
 
-        //**********************************TASK*************************************;
+        //********************************TASK***********************************;
         Task task1 = new Task("Тренировка", "день грудь-плечи");
         Task task2 = new Task("Тренировка", "день ноги");
         manager.createTaskAndReturnId(task1);
