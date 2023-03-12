@@ -3,19 +3,19 @@ package ru.yandex.oop.tasktreker.model;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EpicTask extends Task {
 
     private List<SubTask> subTasks;
 
     public EpicTask(String name, String description) {
-        super(name, description);
+        super(name, description, null, null);
         this.taskType = TaskType.EPICTASK;
         this.subTasks = new ArrayList<>();
+        this.duration = getDuration();
+        this.startTime = getEpicStartTime().get();
     }
 
     public Optional<LocalDateTime> getEpicStartTime() {
@@ -33,8 +33,8 @@ public class EpicTask extends Task {
     }
 
     @Override
-    public Duration getDuration() {
-        return Duration.ofMinutes(subTasks.stream().map(SubTask::getDuration).mapToLong(Duration::toMinutes).sum());
+    public Long getDuration() {
+        return subTasks.stream().mapToLong(SubTask::getDuration).sum();
     }
 
     public List<SubTask> getSubTasks() {

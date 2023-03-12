@@ -44,4 +44,8 @@ public interface TaskManager {
     Task getAnyTask(int id);
 
     List<Task> getAllTasks();
+
+    void isTaskOverlap();
+    void getTaskEndTime(Task task);
+    void getEpicDuration(EpicTask epic);
 }

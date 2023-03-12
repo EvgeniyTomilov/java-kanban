@@ -5,8 +5,10 @@ import ru.yandex.oop.tasktreker.model.Node;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 

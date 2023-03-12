@@ -4,7 +4,6 @@ package ru.yandex.oop.tasktreker.model;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Task {
@@ -13,44 +12,51 @@ public class Task {
     protected String description;
     protected TaskStatus taskStatus;
     protected TaskType taskType;
-    protected Duration duration;
+    protected Long duration;
     protected LocalDateTime startTime;
 
     public Task (){
     }
 
-    public Task(String name, String description) {
+    public Task(String name, String description, Long duration, String startTime) {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
         this.taskType = TaskType.TASK;
+        this.duration = duration;
+        this.startTime = LocalDateTime.parse(startTime);
     }
 
-    public Task(String name, int id, String description, TaskStatus taskStatus) {
+    public Task(String name, int id, String description, TaskStatus taskStatus, Long duration, String startTime) {
         this.name = name;
         this.id = id;
         this.description = description;
         this.taskStatus = taskStatus;
         this.taskType = TaskType.TASK;
+        this.duration = duration;
+        this.startTime = LocalDateTime.parse(startTime);
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plusMinutes(duration.toMinutes());
+        if (startTime == null || duration == 0) {
+            throw new RuntimeException("В задаче отсутствует startTime и/или её продолжительность равно 0");
+        }
+        return startTime.plusMinutes(duration);
     }
 
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setStartTime(String startTime) {
+        this.startTime = LocalDateTime.parse(startTime);
     }
 
-    public Duration getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 

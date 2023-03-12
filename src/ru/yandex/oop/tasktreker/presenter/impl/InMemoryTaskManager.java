@@ -324,6 +324,20 @@ public class InMemoryTaskManager implements TaskManager {
         return list;
     }
 
+    @Override
+    public void isTaskOverlap() {
+
+    }
+
+    @Override
+    public void getTaskEndTime(Task task) {
+
+    }
+
+    @Override
+    public void getEpicDuration(EpicTask epic) {
+
+    }
 
 
     public Map<Integer, Task> getTaskMap() {
