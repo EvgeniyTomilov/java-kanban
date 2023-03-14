@@ -1,14 +1,17 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
+import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
+import ru.yandex.oop.tasktreker.model.TaskStartTimeComparator;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -65,6 +68,32 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return null;
+    }
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
+        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
+        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
+        return sortedByStartTimeTasksSet;
+    }
+
+    @Override
+    public void isTaskOverlap() {
+        LocalDateTime checkTime = null;
+        boolean flagCheckTimeIsEmpty = true;
+        for (Task task : getPrioritizedTasks()) {
+            if (flagCheckTimeIsEmpty) {
+                checkTime = task.getEndTime();
+                flagCheckTimeIsEmpty = false;
+            } else if (task.getStartTime() != null) {
+                if (task.getStartTime().isBefore(checkTime)) {
+                    throw new ManagerSaveException("Найдены пересекающиеся задачи");
+                }
+                if (task.getStartTime().isAfter(checkTime) || task.getStartTime().isEqual(checkTime)) {
+                    checkTime = task.getEndTime();
+                }
+            }
+        }
     }
 
     @Override
@@ -322,11 +351,6 @@ public class InMemoryTaskManager implements TaskManager {
             list.add(pair.getValue());
         }
         return list;
-    }
-
-    @Override
-    public void isTaskOverlap() {
-
     }
 
     @Override

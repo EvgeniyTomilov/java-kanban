@@ -4,6 +4,7 @@ package ru.yandex.oop.tasktreker.model;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Task {
@@ -12,13 +13,13 @@ public class Task {
     protected String description;
     protected TaskStatus taskStatus;
     protected TaskType taskType;
-    protected Long duration;
+    protected Duration duration;
     protected LocalDateTime startTime;
 
     public Task (){
     }
 
-    public Task(String name, String description, Long duration, String startTime) {
+    public Task(String name, String description, Duration duration, String startTime) {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
@@ -27,7 +28,7 @@ public class Task {
         this.startTime = LocalDateTime.parse(startTime);
     }
 
-    public Task(String name, int id, String description, TaskStatus taskStatus, Long duration, String startTime) {
+    public Task(String name, int id, String description, TaskStatus taskStatus, Duration duration, String startTime) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -38,10 +39,10 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == 0) {
-            throw new RuntimeException("В задаче отсутствует startTime и/или её продолжительность равно 0");
+        if (startTime == null || duration.isZero()) {
+             return null;
         }
-        return startTime.plusMinutes(duration);
+        return startTime.plusMinutes(duration.toMinutes());
     }
 
     public LocalDateTime getStartTime() {
@@ -52,11 +53,11 @@ public class Task {
         this.startTime = LocalDateTime.parse(startTime);
     }
 
-    public Long getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(Long duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 

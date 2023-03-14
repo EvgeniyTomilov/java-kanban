@@ -48,4 +48,5 @@ public interface TaskManager {
     void isTaskOverlap();
     void getTaskEndTime(Task task);
     void getEpicDuration(EpicTask epic);
+
 }
