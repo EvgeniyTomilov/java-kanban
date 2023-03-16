@@ -5,6 +5,8 @@ import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void addNewTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         final int taskId = manager.createTaskAndReturnId(task);
         final Task savedTask = manager.getAnyTask(taskId);
 
@@ -30,7 +32,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
         final Task savedEpic = manager.getAnyTask(epicId);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         subTask.setStatus(TaskStatus.NEW);
         manager.createTaskAndReturnId(subTask);
 
@@ -45,7 +47,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     public void addNewSubtask() {
         EpicTask epic = new EpicTask("Test addNewTask", "Test addNewTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         subTask.setStatus(TaskStatus.NEW);
         int subtaskId = manager.createTaskAndReturnId(subTask);
 
@@ -58,11 +60,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void getTaskByType() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         manager.createTaskAndReturnId(subTask);
 
         Collection<? extends Task> taskByTypeTask = manager.getTaskByType(TASK);
@@ -76,11 +78,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void getByIdAndTypeTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         final int taskId = manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         int subtaskId = manager.createTaskAndReturnId(subTask);
 
         assertEquals(task, manager.getByIdAndTypeTask(manager.getTaskMap().get(taskId).getId(), TASK));
@@ -90,11 +92,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void deleteTasksByType() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         manager.createTaskAndReturnId(subTask);
         manager.deleteTasksByType(TASK);
         manager.deleteTasksByType(EPICTASK);
@@ -107,11 +109,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void deleteByIdAndTypeTask() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         final int taskId = manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         final int subtaskId = manager.createTaskAndReturnId(subTask);
         manager.deleteByIdAndTypeTask(taskId, TASK);
         manager.deleteByIdAndTypeTask(epicId, EPICTASK);
@@ -124,11 +126,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void createTaskAndReturnId() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         final int taskId = manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         final int subtaskId = manager.createTaskAndReturnId(subTask);
 
         assertEquals(1, taskId);
@@ -177,11 +179,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void addNewTaskAndEpicTaskAndSubtaskByInvalidId() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         final int taskId = manager.createTaskAndReturnId(task);
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         final int epicId = manager.createTaskAndReturnId(epic);
-        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-12-03T10:15:30");
         final int subtaskId = manager.createTaskAndReturnId(subTask);
 
         assertNull(manager.getAnyTask(5));
