@@ -291,7 +291,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 //        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId(), Duration.ofMinutes(120L), "2007-12-03T10:15:30");
 //        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId(), Duration.ofMinutes(130L), "2007-12-03T10:15:30");
 //        subTask1.setStatus(TaskStatus.IN_PROGRESS);
-//        subTask2.setStatus(TaskStatus.DONE);
+//        subTask2.setStatus(TaskStatus.NEW);
 //        subTask3.setStatus(TaskStatus.NEW);
 //        manager.createTaskAndReturnId(subTask1);
 //        manager.createTaskAndReturnId(subTask2);
