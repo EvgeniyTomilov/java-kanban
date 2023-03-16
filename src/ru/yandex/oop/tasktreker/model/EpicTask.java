@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class EpicTask extends Task {
 
@@ -34,6 +35,14 @@ public class EpicTask extends Task {
                 .filter(Objects::nonNull)
                 .map(SubTask::getStartTime)
                 .max(Comparator.naturalOrder()).get();
+    }
+
+    public Duration getEpicDuration() {
+        Duration epicDuration = Duration.ZERO;
+        for (SubTask subTask : subTasks) {
+            epicDuration.plus(subTask.getDuration());
+        }
+        return epicDuration;
     }
 
     public List<SubTask> getSubTasks() {
