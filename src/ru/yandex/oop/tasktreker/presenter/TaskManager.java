@@ -5,6 +5,8 @@ import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,7 @@ public interface TaskManager {
     List<Task> getAllTasks();
 
     void isTaskOverlap();
-    void getTaskEndTime(Task task);
-    void getEpicDuration(EpicTask epic);
+    LocalDateTime getTaskEndTime(Task task);
+    Duration getEpicDuration(EpicTask epic);
 
 }

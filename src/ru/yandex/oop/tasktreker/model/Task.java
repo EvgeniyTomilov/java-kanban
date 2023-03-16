@@ -1,6 +1,5 @@
 package ru.yandex.oop.tasktreker.model;
 
-
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
@@ -19,23 +18,23 @@ public class Task {
     public Task (){
     }
 
-    public Task(String name, String description, Duration duration, String startTime) {
+    public Task(String name, String description, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.taskStatus = TaskStatus.NEW;
         this.taskType = TaskType.TASK;
         this.duration = duration;
-        this.startTime = LocalDateTime.parse(startTime);
+        this.startTime = startTime;
     }
 
-    public Task(String name, int id, String description, TaskStatus taskStatus, Duration duration, String startTime) {
+    public Task(String name, int id, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
         this.name = name;
         this.id = id;
         this.description = description;
         this.taskStatus = taskStatus;
         this.taskType = TaskType.TASK;
         this.duration = duration;
-        this.startTime = LocalDateTime.parse(startTime);
+        this.startTime = startTime;
     }
 
     public LocalDateTime getEndTime() {

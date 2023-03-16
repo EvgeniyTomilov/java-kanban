@@ -11,6 +11,7 @@ import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -32,7 +33,6 @@ public class InMemoryTaskManager implements TaskManager {
         nextId = 1;
 
     }
-
 
     /**
      * методы бизнес-логики
@@ -354,13 +354,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getTaskEndTime(Task task) {
-
+    public LocalDateTime getTaskEndTime(Task task) {
+        return task.getStartTime().plusMinutes(task.getDuration().toMinutes());
     }
 
     @Override
-    public void getEpicDuration(EpicTask epic) {
-
+    public Duration getEpicDuration(EpicTask epic) {
+        Duration totalDurationOfSubtasks = Duration.ZERO;
+        for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
+            if (pair.getValue().getEpicId() == epic.getId()) {
+                totalDurationOfSubtasks.plus(pair.getValue().getDuration());
+            }
+        }
+        return totalDurationOfSubtasks;
     }
 
 

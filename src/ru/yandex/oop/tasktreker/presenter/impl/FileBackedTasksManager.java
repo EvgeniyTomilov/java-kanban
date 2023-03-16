@@ -39,7 +39,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return sortedByStartTimeTasksSet;
     }
 
-//    public Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {
+    //    public Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {
 //        if (t1.getStartTime() == null && t2.getStartTime() == null) {
 //            return t1.getId() - t2.getId();
 //        }
@@ -61,29 +61,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 //        return 0;
 //    });
 
-
-    // перенос в родителя
-//    @Override
-//    public void isTaskOverlap() {
-//        LocalDateTime checkTime = null;
-//        boolean flagCheckTimeIsEmpty = true;
-//        for (Task task : getPrioritizedTasks()) {
-//            if (flagCheckTimeIsEmpty) {
-//                checkTime = task.getEndTime();
-//                flagCheckTimeIsEmpty = false;
-//            } else if (task.getStartTime() != null) {
-//                if (task.getStartTime().isBefore(checkTime)) {
-//                    throw new ManagerSaveException("Найдены пересекающиеся задачи");
-//                }
-//                if (task.getStartTime().isAfter(checkTime) || task.getStartTime().isEqual(checkTime)) {
-//                    checkTime = task.getEndTime();
-//                }
-//            }
-//        }
-//    }
-
     private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+        String fileName = "resource/file.csv";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("id,type,name,status,description,epic,startTime,duration");
             writer.newLine();
             for (Map.Entry<Integer, Task> pair : getTaskMap().entrySet()) {
@@ -186,12 +166,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         if (element.length == 8) { // если количество элементов = 8, то это сабтаск
             int idEpic = Integer.parseInt(element[7]); // создали доп поле эпикайди через парсинт
-            task = new SubTask(name, desc, idEpic, Long.parseLong(element[6]), element[5]); // создали новую сабтаску
+            task = new SubTask(name, desc, idEpic, Duration.ofMinutes(Long.parseLong(element[6])), element[5]); // создали новую сабтаску
             task.setStatus(taskStatus); // присвоили статус новой сабтаске
             task.setId(id); // установили айди сабтаске
         } else {
             if (taskType == TaskType.TASK) { // если поле таски таска, то это таска
-                task = new Task(name, id, desc, taskStatus, Duration.ofMinutes(Long.parseLong(element[6])), element[5]); // создали новую таску
+                task = new Task(name, id, desc, taskStatus, Duration.ofMinutes(Long.parseLong(element[6])), LocalDateTime.parse(element[5])); // создали новую таску
             } else { // иначе это эпиктаск
                 task = new EpicTask(name, desc);// создали новый эпик таск
                 task.setId(id);// присвоили айди
@@ -294,12 +274,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         manager.getAllTasks().forEach(System.out::println);
 
-        //**********************************TASK*************************************;
 
-
-
-        Task task1 = new Task("Тренировка", "день грудь-плечи", Duration.ofMinutes(10L), "2022-12-03T10:15:30");
-        Task task2 = new Task("Тренировка", "день ноги", Duration.ofMinutes(15L), "2022-12-03T10:15:30");
+        Task task1 = new Task("Тренировка", "день грудь-плечи", Duration.ofMinutes(10L), LocalDateTime.parse("2007-12-03T10:15:30"));
+        Task task2 = new Task("Тренировка", "день ноги", Duration.ofMinutes(15L), LocalDateTime.parse("2007-12-03T10:15:30"));
         manager.createTaskAndReturnId(task1);
         manager.createTaskAndReturnId(task2);
         task1.setStatus(TaskStatus.IN_PROGRESS);
@@ -311,9 +288,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
 
 //       **********************************SUBTASK**********************************
-        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId(), 10000L, "2022-12-03T10:15:30");
-        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId(), 10000L, "2022-11-03T10:15:30");
-        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId(), 10000L, "2022-10-03T10:15:30");
+        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId(), Duration.ofMinutes(110L), "2007-12-03T10:15:30");
+        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId(), Duration.ofMinutes(120L), "2007-12-03T10:15:30");
+        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId(), Duration.ofMinutes(130L), "2007-12-03T10:15:30");
         subTask1.setStatus(TaskStatus.IN_PROGRESS);
         subTask2.setStatus(TaskStatus.DONE);
         subTask3.setStatus(TaskStatus.NEW);

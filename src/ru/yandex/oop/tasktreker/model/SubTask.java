@@ -2,17 +2,22 @@ package ru.yandex.oop.tasktreker.model;
 
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, int epicId, Long duration, String startTime) {
+    public SubTask(String name, String description, int epicId, Duration duration, String startTime) {
         super(name, description, null, null);
         this.taskType = TaskType.SUBTASK;
         this.epicId = epicId;
         this.startTime = LocalDateTime.parse(startTime);
         this.duration = duration;
+    }
+
+    public Duration getSubTaskDuration() {
+        return super.getDuration();
     }
 
     public int getEpicId() {
