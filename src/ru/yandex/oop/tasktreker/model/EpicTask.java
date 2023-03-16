@@ -40,7 +40,7 @@ public class EpicTask extends Task {
     public Duration getEpicDuration() {
         Duration epicDuration = Duration.ZERO;
         for (SubTask subTask : subTasks) {
-            epicDuration.plus(subTask.getDuration());
+            epicDuration = epicDuration.plus(subTask.getDuration());
         }
         return epicDuration;
     }
@@ -54,8 +54,7 @@ public class EpicTask extends Task {
     public void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
-
-
+    
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
         this.startTime = getEpicStartTime();
