@@ -9,6 +9,8 @@ import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryHistoryManager;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void add() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
 
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
@@ -56,11 +58,11 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void addByDuplication() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
-        Task task2 = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
+        Task task2 = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(15), LocalDateTime.parse("2008-12-03T10:15:30"));
         EpicTask epic2 = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
-        SubTask subTask  = new SubTask("subTask1 epicTask", "description test subTask1", epic.getId());
-        SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask1", epic2.getId());
+        SubTask subTask = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-01-03T10:15:30");
+        SubTask subTask2 = new SubTask("newSubtask", "description newSubtask", epic.getId(), Duration.ofMinutes(15), "2008-02-03T10:15:30");
 
         historyManager.add(task);
         historyManager.add(task2);
@@ -81,7 +83,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void remove() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
 
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
