@@ -110,7 +110,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             // сложили эпики
             for (int i = 0; i < tasks.size(); i++) {
                 if (tasks.get(i).getTaskType() == TaskType.EPICTASK) {
-//                    fromFile.createTaskAndReturnId(tasks.get(i));
                     fromFile.getEpicTaskMap().put(tasks.get(i).getId(), (EpicTask) tasks.get(i));
                     taskCount++;
                 }
@@ -119,6 +118,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (int i = 0; i < tasks.size(); i++) {
                 if (tasks.get(i).getTaskType() == TaskType.SUBTASK) {
                     fromFile.getSubTaskMap().put(tasks.get(i).getId(), (SubTask) tasks.get(i));
+                    fromFile.getEpicTaskMap().get(((SubTask) tasks.get(i)).getEpicId()).addSubTask((SubTask) tasks.get(i));
                     taskCount++;
                 }
                 if (tasks.get(i).getTaskType() == TaskType.TASK) {
@@ -166,12 +166,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         if (element.length == 8) { // если количество элементов = 8, то это сабтаск
             int idEpic = Integer.parseInt(element[7]); // создали доп поле эпикайди через парсинт
-            task = new SubTask(name, desc, idEpic, Duration.ofMinutes(Long.parseLong(element[6])), element[5]); // создали новую сабтаску
+            task = new SubTask(name, desc, idEpic, Duration.parse(element[6]), element[5]); // создали новую сабтаску
             task.setStatus(taskStatus); // присвоили статус новой сабтаске
             task.setId(id); // установили айди сабтаске
         } else {
             if (taskType == TaskType.TASK) { // если поле таски таска, то это таска
-                task = new Task(name, id, desc, taskStatus, Duration.ofMinutes(Long.parseLong(element[6])), LocalDateTime.parse(element[5])); // создали новую таску
+                task = new Task(name, id, desc, taskStatus, Duration.parse(element[6]), LocalDateTime.parse(element[5])); // создали новую таску
             } else { // иначе это эпиктаск
                 task = new EpicTask(name, desc);// создали новый эпик таск
                 task.setId(id);// присвоили айди
@@ -268,46 +268,46 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-//        TaskManager manager = loadFromFile(new File("resource\\file.csv"));
-        TaskManager manager = new FileBackedTasksManager();
-        HistoryManager historyManager = manager.getHistoryManager();
-
+        TaskManager manager = loadFromFile(new File("resource\\file.csv"));
+//        TaskManager manager = new FileBackedTasksManager();
+//        HistoryManager historyManager = manager.getHistoryManager();
+//
+//        manager.getAllTasks().forEach(System.out::println);
+//
+//        Task task1 = new Task("Тренировка", "день грудь-плечи", Duration.ofMinutes(10L), LocalDateTime.parse("2007-12-03T10:15:30"));
+//        Task task2 = new Task("Тренировка", "день ноги", Duration.ofMinutes(15L), LocalDateTime.parse("2007-12-03T10:15:30"));
+//        manager.createTaskAndReturnId(task1);
+//        manager.createTaskAndReturnId(task2);
+//        task1.setStatus(TaskStatus.IN_PROGRESS);
+//
+////        **********************************EPIC*************************************
+//        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия");
+//        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты");
+//        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
+//        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
+//
+////       **********************************SUBTASK**********************************
+//        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId(), Duration.ofMinutes(110L), "2007-12-03T10:15:30");
+//        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId(), Duration.ofMinutes(120L), "2007-12-03T10:15:30");
+//        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId(), Duration.ofMinutes(130L), "2007-12-03T10:15:30");
+//        subTask1.setStatus(TaskStatus.IN_PROGRESS);
+//        subTask2.setStatus(TaskStatus.DONE);
+//        subTask3.setStatus(TaskStatus.NEW);
+//        manager.createTaskAndReturnId(subTask1);
+//        manager.createTaskAndReturnId(subTask2);
+//        manager.createTaskAndReturnId(subTask3);
+//
+//        Task t1 = manager.getAnyTask(4);
+//        Task t2 = manager.getAnyTask(2);
+//        Task t3 = manager.getAnyTask(1);
+//
+//        t1 = manager.getAnyTask(5);
+//        t1 = manager.getAnyTask(5);
+//        t1 = manager.getAnyTask(5);
+//
+//        System.out.println("HISTORY");
+//        List<Task> history = historyManager.getHistory();
+//        history.forEach(System.out::println);
         manager.getAllTasks().forEach(System.out::println);
-
-
-        Task task1 = new Task("Тренировка", "день грудь-плечи", Duration.ofMinutes(10L), LocalDateTime.parse("2007-12-03T10:15:30"));
-        Task task2 = new Task("Тренировка", "день ноги", Duration.ofMinutes(15L), LocalDateTime.parse("2007-12-03T10:15:30"));
-        manager.createTaskAndReturnId(task1);
-        manager.createTaskAndReturnId(task2);
-        task1.setStatus(TaskStatus.IN_PROGRESS);
-
-//        **********************************EPIC*************************************
-        EpicTask epicTask1 = new EpicTask("Купить квартиру", "улучшить жилищьные условия");
-        EpicTask epicTask2 = new EpicTask("Сходить в магазин", "Купить продукты");
-        epicTask1.setId(manager.createTaskAndReturnId(epicTask1));
-        epicTask2.setId(manager.createTaskAndReturnId(epicTask2));
-
-//       **********************************SUBTASK**********************************
-        SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId(), Duration.ofMinutes(110L), "2007-12-03T10:15:30");
-        SubTask subTask2 = new SubTask("Квартира", "Найти хату", epicTask1.getId(), Duration.ofMinutes(120L), "2007-12-03T10:15:30");
-        SubTask subTask3 = new SubTask("Банк", "Найти банк с наименьшим %", epicTask1.getId(), Duration.ofMinutes(130L), "2007-12-03T10:15:30");
-        subTask1.setStatus(TaskStatus.IN_PROGRESS);
-        subTask2.setStatus(TaskStatus.DONE);
-        subTask3.setStatus(TaskStatus.NEW);
-        manager.createTaskAndReturnId(subTask1);
-        manager.createTaskAndReturnId(subTask2);
-        manager.createTaskAndReturnId(subTask3);
-
-        Task t1 = manager.getAnyTask(4);
-        Task t2 = manager.getAnyTask(2);
-        Task t3 = manager.getAnyTask(1);
-
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-        t1 = manager.getAnyTask(5);
-
-        System.out.println("HISTORY");
-        List<Task> history = historyManager.getHistory();
-        history.forEach(System.out::println);
     }
 }

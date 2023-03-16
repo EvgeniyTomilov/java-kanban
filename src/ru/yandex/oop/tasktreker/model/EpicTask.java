@@ -54,8 +54,12 @@ public class EpicTask extends Task {
     public void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
+
+
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
+        this.startTime = getEpicStartTime();
+        this.duration = getEpicDuration();
     }
     public void deleteAllSubtasks() {
         subTasks.clear();
