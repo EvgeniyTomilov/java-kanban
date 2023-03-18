@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
@@ -22,6 +23,8 @@ public interface TaskManager {
     HistoryManager getHistoryManager();
 
     Collection<? extends Task> getTaskByType(TaskType taskType);
+
+    TreeSet<Task> getPrioritizedTasks();
 
     Task getByIdAndTypeTask(int id, TaskType taskType);
 
@@ -37,11 +40,6 @@ public interface TaskManager {
 
     int getNextId();
 
-//    Task getTask(int id);
-//
-//    SubTask getSubtask(int id);
-//
-//    EpicTask getEpic(int id);
 
     Task getAnyTask(int id);
 
