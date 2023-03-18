@@ -61,7 +61,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 //        return 0;
 //    });
 
-    private void save() {
+    public void save() {
         String fileName = "resource/file.csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("id,type,name,status,description,epic,startTime,duration");
