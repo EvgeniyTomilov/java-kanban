@@ -15,8 +15,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.oop.tasktreker.model.enums.TaskType.*;
 
-abstract class TaskManagerTest<T extends TaskManager> {
-    T manager;
+abstract class TaskManagerTest {
+    TaskManager manager;
 
     public Task create(TaskType taskType) {
         if (taskType.equals(TaskType.TASK)) {

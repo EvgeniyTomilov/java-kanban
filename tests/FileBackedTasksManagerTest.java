@@ -1,16 +1,14 @@
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
-import ru.yandex.oop.tasktreker.model.enums.TaskType;
+import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.impl.FileBackedTasksManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
-import javax.imageio.IIOException;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -18,15 +16,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class FileBackedTasksManagerTest extends TaskManagerTest {
 
-    FileBackedTasksManager manager = Managers.getFileBacked("./file.csv");
 
     @BeforeEach
     public void beforeEach() {
-        manager = Managers.getFileBacked("./file.csv");
+        manager = Managers.getFileBacked("./fileTest.csv");
     }
 
     @Test
@@ -53,9 +51,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest {
             String stringFile = Files.readString(Path.of(manager.getFile().getPath()));
             String[] lines = stringFile.split("\n");
             assertEquals(3, lines.length);
-            assertEquals(" ", lines[lines.length-1]);
+            assertEquals(" ", lines[lines.length - 1]);
             assertEquals("id,type,name,status,description,epic,startTime,duration", lines[0]);
-        }catch (IIOException ignored){}
+        } catch (IOException ignored) {
+        }
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(manager.getFile());
         assertNull(newManager.getAllTasks());
     }
@@ -68,9 +67,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest {
             String stringFile = Files.readString(Path.of(manager.getFile().getPath()));
             String[] lines = stringFile.split("\n");
             assertEquals(4, lines.length);
-            assertEquals(" ", lines[lines.length-1]);
+            assertEquals(" ", lines[lines.length - 1]);
             assertEquals("1,EPICTASK,Test addNewEpicTask,NEW,Test addNewEpicTask description,,null,null", lines[1]);
-        }catch (IIOException ignored){}
+        } catch (IOException ignored) {
+        }
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(manager.getFile());
         assertEquals(manager.getAnyTask(epicId).toString(), newManager.getAnyTask(epicId).toString());
     }
@@ -83,9 +83,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest {
             String stringFile = Files.readString(Path.of(manager.getFile().getPath()));
             String[] lines = stringFile.split("\n");
             assertEquals(4, lines.length);
-            assertEquals(" ", lines[lines.length-1]);
+            assertEquals(" ", lines[lines.length - 1]);
             assertEquals("1,EPICTASK,Test addNewEpicTask,NEW,Test addNewEpicTask description,,null,null", lines[1]);
-        }catch (IIOException ignored){}
+        } catch (IOException ignored) {
+        }
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(manager.getFile());
         assertEquals(manager.getAnyTask(epicId).toString(), newManager.getAnyTask(epicId).toString());
         assertNull(newManager.getHistoryManager());
