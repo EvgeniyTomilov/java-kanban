@@ -32,11 +32,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return file;
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
+    public List<Task> getPrioritizedTasks() {
         TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
         sortedByStartTimeTasksSet.addAll(this.getAllTasks());
         sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
-        return sortedByStartTimeTasksSet;
+        return new ArrayList<>(sortedByStartTimeTasksSet);
     }
 
     //    public Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {

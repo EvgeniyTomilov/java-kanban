@@ -24,7 +24,7 @@ public interface TaskManager {
 
     Collection<? extends Task> getTaskByType(TaskType taskType);
 
-    TreeSet<Task> getPrioritizedTasks();
+    List<Task> getPrioritizedTasks();
 
     Task getByIdAndTypeTask(int id, TaskType taskType);
 
@@ -45,7 +45,8 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-    void isTaskOverlap();
+//    void isTaskOverlap();
+    boolean isTaskOverlap();
     LocalDateTime getTaskEndTime(Task task);
     Duration getEpicDuration(EpicTask epic);
 

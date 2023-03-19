@@ -15,18 +15,19 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager {
+public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     private final Map<Integer, Task> taskMap;
     private final Map<Integer, SubTask> subTaskMap;
     private final Map<Integer, EpicTask> epicTaskMap;
+    private final Set<Task> prioritizedTasks;
     private int nextId;
-
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     public InMemoryTaskManager() {
+        prioritizedTasks = new TreeSet<>(this);
         this.taskMap = new HashMap<>();
         this.subTaskMap = new HashMap<>();
         this.epicTaskMap = new HashMap<>();
@@ -71,31 +72,54 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TreeSet<Task> getPrioritizedTasks() {
-        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
-        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
-        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
-        return sortedByStartTimeTasksSet;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
-    @Override
-    public void isTaskOverlap() {
-        LocalDateTime checkTime = null;
-        boolean flagCheckTimeIsEmpty = true;
-        for (Task task : getPrioritizedTasks()) {
-            if (flagCheckTimeIsEmpty) {
-                checkTime = task.getEndTime();
-                flagCheckTimeIsEmpty = false;
-            } else if (task.getStartTime() != null) {
-                if (task.getStartTime().isBefore(checkTime)) {
-                    throw new ManagerSaveException("Найдены пересекающиеся задачи");
-                }
-                if (task.getStartTime().isAfter(checkTime) || task.getStartTime().isEqual(checkTime)) {
-                    checkTime = task.getEndTime();
-                }
+    private void addToPrioritizedTasks(Task task) {
+        if (isTaskOverlap(task)) {
+            prioritizedTasks.add(task);
+        }
+
+    }
+
+//    @Override
+//    public List<Task> getPrioritizedTasks() {
+//        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
+//        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
+//        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
+//        return new ArrayList<>(sortedByStartTimeTasksSet);
+//    }
+
+//    @Override
+//    public void isTaskOverlap() {
+//        LocalDateTime checkTime = null;
+//        boolean flagCheckTimeIsEmpty = true;
+//        for (Task task : getPrioritizedTasks()) {
+//            if (flagCheckTimeIsEmpty) {
+//                checkTime = task.getEndTime();
+//                flagCheckTimeIsEmpty = false;
+//            } else if (task.getStartTime() != null) {
+//                if (task.getStartTime().isBefore(checkTime)) {
+//                    throw new ManagerSaveException("Найдены пересекающиеся задачи");
+//                }
+//                if (task.getStartTime().isAfter(checkTime) || task.getStartTime().isEqual(checkTime)) {
+//                    checkTime = task.getEndTime();
+//                }
+//            }
+//        }
+//    }
+
+    public boolean isTaskOverlap(Task task) {
+        List<Task> prioritizedTasks = getPrioritizedTasks();
+        for (int i = 0; i < prioritizedTasks.size(); i++) {
+            if (task.getStartTime().isBefore(prioritizedTasks.get(i).getEndTime())) {
+                return false;
             }
         }
+        return true;
     }
+
 
     @Override
     public Task getByIdAndTypeTask(int id, TaskType taskType) {// получить таску по id и по ее типу
@@ -385,5 +409,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void setNextId(int nextId) {
         this.nextId = nextId;
+    }
+
+    @Override
+    public int compare(final Task task1, final Task task2) {
+        return task1.getStartTime().compareTo(task2.getStartTime());
     }
 }
