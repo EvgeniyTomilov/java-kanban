@@ -137,7 +137,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerLoadException("ERROR");
+            throw new ManagerLoadException("ERROR", e);
         }
         return fromFile;
     }

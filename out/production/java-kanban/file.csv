@@ -1,2 +1,4 @@
 id,type,name,status,description,epic,startTime,duration
+1,EPICTASK,Test addNewEpicTask,NEW,Test addNewEpicTask description,null,null
 
+1
