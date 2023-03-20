@@ -1,7 +1,4 @@
 id,type,name,status,description,epic,startTime,duration
-1,TASK,01t,NEW,01t,2007-12-03T10:15:30,PT10M
-2,TASK,01t,NEW,01t,2007-12-03T10:15:30,PT10M
-4,SUBTASK,newSubtask,NEW,description newSubtask,2007-12-03T10:15:30,PT15M,3
-3,EPICTASK,Test addNewEpicTask,NEW,Test addNewEpicTask description,2007-12-03T10:15:30,PT15M
+3,EPICTASK,Test addNewEpicTask,NEW,Test addNewEpicTask description,null,null
 
-3,2,1,
+1
