@@ -5,7 +5,6 @@ import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
-import ru.yandex.oop.tasktreker.model.TaskStartTimeComparator;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
@@ -31,35 +30,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static File getFile() {
         return file;
     }
-
-    public List<Task> getPrioritizedTasks() {
-        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
-        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
-        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
-        return new ArrayList<>(sortedByStartTimeTasksSet);
-    }
-
-    //    public Set<Task> prioritizedTasks = new TreeSet<>((t1, t2) -> {
-//        if (t1.getStartTime() == null && t2.getStartTime() == null) {
-//            return t1.getId() - t2.getId();
-//        }
-//        if (t1.getStartTime() == null) {
-//            return 1;
-//        }
-//        if (t2.getStartTime() == null) {
-//            return -1;
-//        }
-//        if (t1.getStartTime().isAfter(t2.getStartTime())) {
-//            return 1;
-//        }
-//        if (t1.getStartTime().isBefore(t2.getStartTime())) {
-//            return -1;
-//        }
-//        if (t1.getStartTime().isEqual(t2.getStartTime())) {
-//            return t1.getId() - t2.getId();
-//        }
-//        return 0;
-//    });
 
     public void save() {
         String fileName = "resource/file.csv";
