@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
+import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryHistoryManager;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +19,35 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    private HistoryManager historyManager;
+    private HistoryManager historyManager = new InMemoryHistoryManager();
     private EpicTask epic;
+    private Task task;
+    private SubTask subTask;
     private TaskManager taskManager;
 
 
     @BeforeEach
     public void beforeEach() {
-        historyManager = new InMemoryHistoryManager();
+        this.task = create(TaskType.TASK);
+        this.task.setId(1001);
+        this.epic = (EpicTask) create(TaskType.EPICTASK);
+        this.epic.setId(2001);
+        this.subTask = new SubTask("newSubtask", "description newSubtask", 0, Duration.ofMinutes(15), "2008-01-03T10:15:30");
+        subTask.setId(3001);
         taskManager = new InMemoryTaskManager();
-        epic = new EpicTask("Test epicTask", "description test epicTask");
-        epic.setId(taskManager.createTaskAndReturnId(epic));
+
 
     }
+
+    public Task create(TaskType taskType) {
+        if (taskType.equals(TaskType.TASK)) {
+            return new Task("01t", "01t", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
+        } else if (taskType.equals(TaskType.EPICTASK)) {
+            return new EpicTask("01e", "01e");
+        }
+        return new SubTask("newSubtask", "description newSubtask", 0, Duration.ofMinutes(15), "2008-01-03T10:15:30");
+    }
+
     @AfterEach
     public void afterEach() {
         if (historyManager.getHistory() != null) {
@@ -38,57 +57,87 @@ class InMemoryHistoryManagerTest {
 
     @Test
     public void add() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
 
         historyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
+        assertEquals(1, historyManager.getHistory().size());
+        historyManager.add(epic);
+        assertEquals(2, historyManager.getHistory().size());
+        historyManager.add(subTask);
+        assertEquals(3, historyManager.getHistory().size());
 
-        assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+        List<Task> history = new ArrayList<>();
+        history.add(subTask);
+        history.add(epic);
+        history.add(task);
+        assertEquals(history, historyManager.getHistory());
+
     }
 
     @Test
-    public void addWhenListIsEmpty() {
+    public void getHistoryWhenListIsEmpty() {
         final List<Task> history = new ArrayList<>();
+
+        assertEquals(history, historyManager.getHistory());
+
+    }
+
+    @Test
+    public void addByDuplication() {
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subTask);
+        historyManager.add(task);
+        historyManager.add(epic);
+
+        List<Task> history = new ArrayList<>();
+        history.add(epic);
+        history.add(task);
+        history.add(subTask);
+
+        assertEquals(history, historyManager.getHistory());
+        assertEquals(3, historyManager.getHistory().size());
+
+
+    }
+
+
+    @Test
+    public void removeFromTheBeginning() {
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subTask);
+        historyManager.remove(task.getId());
+        List<Task> history = new ArrayList<>();
+        history.add(subTask);
+        history.add(epic);
 
         assertEquals(history, historyManager.getHistory());
     }
 
     @Test
-    public void addByDuplication() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
-        Task task2 = new Task("Test addNewTask", "Test addNewTask description");
-        EpicTask epic2 = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
-        SubTask subTask  = new SubTask("subTask1 epicTask", "description test subTask1", epic.getId());
-        SubTask subTask2 = new SubTask("subTask1 epicTask", "description test subTask1", epic2.getId());
-
+    public void removeFromTheMiddle() {
         historyManager.add(task);
-        historyManager.add(task2);
         historyManager.add(epic);
-        historyManager.add(epic2);
         historyManager.add(subTask);
-        historyManager.add(subTask2);
-        final List<Task> history = historyManager.getHistory();
+        historyManager.remove(epic.getId());
+        List<Task> history = new ArrayList<>();
+        history.add(subTask);
+        history.add(task);
 
-        assertNotNull(history, "История не пустая.");
-        assertEquals(2, history.size(), "История не пустая.");
+        assertEquals(history, historyManager.getHistory());
     }
 
-
-
-
-
-
     @Test
-    public void remove() {
-        Task task = new Task("Test addNewTask", "Test addNewTask description");
-
+    public void removeFromTheEnd() {
         historyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
-        historyManager.remove(1);
+        historyManager.add(epic);
+        historyManager.add(subTask);
+        historyManager.remove(subTask.getId());
+        List<Task> history = new ArrayList<>();
+        history.add(epic);
+        history.add(task);
 
-        //       assertNotNull(history, "История не пустая.");
-        assertEquals(0, history.size(), "История не пустая.");
+        assertEquals(history, historyManager.getHistory());
     }
 }
 

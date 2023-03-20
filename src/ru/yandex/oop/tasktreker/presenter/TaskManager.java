@@ -5,9 +5,12 @@ import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
@@ -20,6 +23,8 @@ public interface TaskManager {
     HistoryManager getHistoryManager();
 
     Collection<? extends Task> getTaskByType(TaskType taskType);
+
+    List<Task> getPrioritizedTasks();
 
     Task getByIdAndTypeTask(int id, TaskType taskType);
 
@@ -35,17 +40,14 @@ public interface TaskManager {
 
     int getNextId();
 
-//    Task getTask(int id);
-//
-//    SubTask getSubtask(int id);
-//
-//    EpicTask getEpic(int id);
 
     Task getAnyTask(int id);
 
     List<Task> getAllTasks();
 
-    void isTaskOverlap();
-    void getTaskEndTime(Task task);
-    void getEpicDuration(EpicTask epic);
+    void isTaskOverlap(Task task);
+//    boolean isTaskOverlap(Task task);
+    LocalDateTime getTaskEndTime(Task task);
+    Duration getEpicDuration(EpicTask epic);
+
 }

@@ -1,28 +1,34 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
+import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
+import ru.yandex.oop.tasktreker.exception.TaskValidationException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
+import ru.yandex.oop.tasktreker.model.TaskStartTimeComparator;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager {
+public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     private final Map<Integer, Task> taskMap;
     private final Map<Integer, SubTask> subTaskMap;
     private final Map<Integer, EpicTask> epicTaskMap;
+    private final Set<Task> prioritizedTasks;
     private int nextId;
-
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     public InMemoryTaskManager() {
+        prioritizedTasks = new TreeSet<>(this);
         this.taskMap = new HashMap<>();
         this.subTaskMap = new HashMap<>();
         this.epicTaskMap = new HashMap<>();
@@ -30,10 +36,38 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        if (prioritizedTasks.isEmpty()) {
+            return null;
+        }
+        return new ArrayList<>(prioritizedTasks);
+    }
 
-    /**
-     * методы бизнес-логики
-     */
+    @Override
+    public void isTaskOverlap(Task task) {
+        if (task.getStartTime() != null) {
+            final LocalDateTime startTime;
+            final LocalDateTime endTime;
+            startTime = task.getStartTime();
+            endTime = task.getEndTime();
+            for (Task t : prioritizedTasks) {
+                final LocalDateTime existStart = t.getStartTime();
+                final LocalDateTime existEnd = t.getEndTime();
+                if (existStart != null) {
+                    if (endTime.isBefore(existStart)) {
+                        continue;
+                    }
+                    if (existEnd.isBefore(startTime)) {
+                        continue;
+                    }
+                    throw new TaskValidationException("Задача пересекается с id=" + t.getId() + " c " + existStart + " по " + existEnd);
+                }
+            }
+        }
+        prioritizedTasks.add(task);
+    }
+
     @Override
     public Collection<? extends Task> getTaskByType(TaskType taskType) { //получить таску по типу (метод возвращает коллекцию, которая хранит в себе объекты которые являются наследником Task)
 
@@ -66,6 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return null;
     }
+
 
     @Override
     public Task getByIdAndTypeTask(int id, TaskType taskType) {// получить таску по id и по ее типу
@@ -325,18 +360,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void isTaskOverlap() {
-
+    public LocalDateTime getTaskEndTime(Task task) {
+        return task.getStartTime().plusMinutes(task.getDuration().toMinutes());
     }
 
     @Override
-    public void getTaskEndTime(Task task) {
-
-    }
-
-    @Override
-    public void getEpicDuration(EpicTask epic) {
-
+    public Duration getEpicDuration(EpicTask epic) {
+        Duration totalDurationOfSubtasks = Duration.ZERO;
+        for (Map.Entry<Integer, SubTask> pair : getSubTaskMap().entrySet()) {
+            if (pair.getValue().getEpicId() == epic.getId()) {
+                totalDurationOfSubtasks.plus(pair.getValue().getDuration());
+            }
+        }
+        return totalDurationOfSubtasks;
     }
 
 
@@ -354,5 +390,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void setNextId(int nextId) {
         this.nextId = nextId;
+    }
+
+    @Override
+    public int compare(final Task task1, final Task task2) {
+        return task1.getStartTime().compareTo(task2.getStartTime());
     }
 }
