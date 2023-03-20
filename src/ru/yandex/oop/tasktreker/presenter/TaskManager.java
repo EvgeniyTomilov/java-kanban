@@ -45,8 +45,8 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
-//    void isTaskOverlap();
-    boolean isTaskOverlap(Task task);
+    void isTaskOverlap(Task task);
+//    boolean isTaskOverlap(Task task);
     LocalDateTime getTaskEndTime(Task task);
     Duration getEpicDuration(EpicTask epic);
 

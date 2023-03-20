@@ -1,6 +1,7 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
 import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
+import ru.yandex.oop.tasktreker.exception.TaskValidationException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
@@ -35,9 +36,38 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
     }
 
-    /**
-     * методы бизнес-логики
-     */
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        if (prioritizedTasks.isEmpty()) {
+            return null;
+        }
+        return new ArrayList<>(prioritizedTasks);
+    }
+
+    @Override
+    public void isTaskOverlap(Task task) {
+        if (task.getStartTime() != null) {
+            final LocalDateTime startTime;
+            final LocalDateTime endTime;
+            startTime = task.getStartTime();
+            endTime = task.getEndTime();
+            for (Task t : prioritizedTasks) {
+                final LocalDateTime existStart = t.getStartTime();
+                final LocalDateTime existEnd = t.getEndTime();
+                if (existStart != null) {
+                    if (endTime.isBefore(existStart)) {
+                        continue;
+                    }
+                    if (existEnd.isBefore(startTime)) {
+                        continue;
+                    }
+                    throw new TaskValidationException("Задача пересекается с id=" + t.getId() + " c " + existStart + " по " + existEnd);
+                }
+            }
+        }
+        prioritizedTasks.add(task);
+    }
+
     @Override
     public Collection<? extends Task> getTaskByType(TaskType taskType) { //получить таску по типу (метод возвращает коллекцию, которая хранит в себе объекты которые являются наследником Task)
 
@@ -69,55 +99,6 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
             }
         }
         return null;
-    }
-
-    @Override
-    public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(prioritizedTasks);
-    }
-
-    private void addToPrioritizedTasks(Task task) {
-        if (isTaskOverlap(task)) {
-            prioritizedTasks.add(task);
-        }
-
-    }
-
-//    @Override
-//    public List<Task> getPrioritizedTasks() {
-//        TreeSet<Task> sortedByStartTimeTasksSet = new TreeSet<>(new TaskStartTimeComparator());
-//        sortedByStartTimeTasksSet.addAll(this.getAllTasks());
-//        sortedByStartTimeTasksSet.addAll(this.getSubTaskMap().values());
-//        return new ArrayList<>(sortedByStartTimeTasksSet);
-//    }
-
-//    @Override
-//    public void isTaskOverlap() {
-//        LocalDateTime checkTime = null;
-//        boolean flagCheckTimeIsEmpty = true;
-//        for (Task task : getPrioritizedTasks()) {
-//            if (flagCheckTimeIsEmpty) {
-//                checkTime = task.getEndTime();
-//                flagCheckTimeIsEmpty = false;
-//            } else if (task.getStartTime() != null) {
-//                if (task.getStartTime().isBefore(checkTime)) {
-//                    throw new ManagerSaveException("Найдены пересекающиеся задачи");
-//                }
-//                if (task.getStartTime().isAfter(checkTime) || task.getStartTime().isEqual(checkTime)) {
-//                    checkTime = task.getEndTime();
-//                }
-//            }
-//        }
-//    }
-
-    public boolean isTaskOverlap(Task task) {
-        List<Task> prioritizedTasks = getPrioritizedTasks();
-        for (int i = 0; i < prioritizedTasks.size(); i++) {
-            if (task.getStartTime().isBefore(prioritizedTasks.get(i).getEndTime())) {
-                return false;
-            }
-        }
-        return true;
     }
 
 
