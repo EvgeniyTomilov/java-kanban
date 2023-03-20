@@ -33,7 +33,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         Task task = new Task("01t", "01t", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         manager.createTaskAndReturnId(task);
         Task task2 = new Task("01t", "01t", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
-        assertEquals(0, manager.createTaskAndReturnId(task2));
+        assertEquals(2, manager.createTaskAndReturnId(task2));
 
         EpicTask epic = new EpicTask("Test addNewEpicTask", "Test addNewEpicTask description");
         int epicId = manager.createTaskAndReturnId(epic);
