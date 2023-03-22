@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
+public class InMemoryTaskManager implements TaskManager {
 
     private final Map<Integer, Task> taskMap;
     private final Map<Integer, SubTask> subTaskMap;
@@ -28,7 +28,7 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
 
 
     public InMemoryTaskManager() {
-        prioritizedTasks = new TreeSet<>(this);
+        prioritizedTasks = new TreeSet<>();
         this.taskMap = new HashMap<>();
         this.subTaskMap = new HashMap<>();
         this.epicTaskMap = new HashMap<>();
@@ -239,11 +239,15 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
             int epicIdOfSubtask = subTaskMap.get(keyId).getEpicId();
             epicTaskMap.get(epicIdOfSubtask).addSubTask((SubTask) task);
             changeStatus(epicTaskMap.get(epicIdOfSubtask).getId());
+            prioritizedTasks.add(task);
         } else if (task instanceof EpicTask) {
             this.epicTaskMap.put(keyId, (EpicTask) task);
+            isTaskOverlap(task);
         } else {
             this.taskMap.put(keyId, task);
+            isTaskOverlap(task);
         }
+
         historyManager.add(task);
         return keyId;
     }
@@ -392,8 +396,5 @@ public class InMemoryTaskManager implements TaskManager, Comparator<Task> {
         this.nextId = nextId;
     }
 
-    @Override
-    public int compare(final Task task1, final Task task2) {
-        return task1.getStartTime().compareTo(task2.getStartTime());
-    }
+
 }

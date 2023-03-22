@@ -5,8 +5,9 @@ import ru.yandex.oop.tasktreker.model.enums.TaskType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
     protected String name;
     protected int id;
     protected String description;
@@ -15,7 +16,7 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-    public Task (){
+    public Task() {
     }
 
     public Task(String name, String description, Duration duration, LocalDateTime startTime) {
@@ -39,7 +40,7 @@ public class Task {
 
     public LocalDateTime getEndTime() {
         if (startTime == null || duration.isZero()) {
-             return null;
+            return null;
         }
         return startTime.plusMinutes(duration.toMinutes());
     }
@@ -63,30 +64,39 @@ public class Task {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public TaskStatus getStatus() {
         return taskStatus;
     }
+
     public void setStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
+
     public TaskType getTaskType() {
         return taskType;
     }
+
     public void setTaskType(TaskType taskType) {
         this.taskType = taskType;
     }
@@ -102,5 +112,36 @@ public class Task {
                 ", duration=" + duration +
                 ", startTime=" + startTime +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Task o) {
+        if (o == null) {
+            return 1;
+        }
+        if (this.getStartTime() == null && o.getStartTime() == null) {
+            return this.getId() - o.getId();
+        } else if (this.getStartTime() == null && o.getStartTime() != null) {
+            return 1;
+        } else if (this.getStartTime() != null && o.getStartTime() == null) {
+            return -1;
+        } else {
+            return this.getStartTime().compareTo(o.getStartTime());
+        }
+
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && Objects.equals(name, task.name) && Objects.equals(description, task.description) && taskStatus == task.taskStatus && taskType == task.taskType && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, id, description, taskStatus, taskType, duration, startTime);
     }
 }

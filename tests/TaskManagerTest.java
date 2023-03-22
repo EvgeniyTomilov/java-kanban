@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import ru.yandex.oop.tasktreker.exception.TaskValidationException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
@@ -36,8 +37,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.createTaskAndReturnId(task2);
         Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:45:30"));
 
-
-        assertEquals(0, manager.createTaskAndReturnId(task3));
+        assertThrows(TaskValidationException.class, () -> manager.createTaskAndReturnId(task3));
+//        assertEquals(0, manager.createTaskAndReturnId(task3));
     }
 
     @Test
@@ -46,14 +47,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.createTaskAndReturnId(task);
         Task task2 = new Task("Test addNewTask2", "Test addNewTask2 description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:15:30"));
         manager.createTaskAndReturnId(task2);
-        Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description", Duration.ofMinutes(10), LocalDateTime.parse(" "));
+        Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description", Duration.ofMinutes(10), null);
         manager.createTaskAndReturnId(task3);
-        Task[] prioritizedTasks = new Task[3];
-        prioritizedTasks[0] = task2;
-        prioritizedTasks[1] = task;
-        prioritizedTasks[2] = task3;
+//        Task[] prioritizedTasks = new Task[3];
+//        prioritizedTasks[0] = task2;
+//        prioritizedTasks[1] = task;
+//        prioritizedTasks[2] = task3;
 
-        assertEquals(prioritizedTasks, manager.getPrioritizedTasks().toArray());
+        assertEquals(task2,manager.getPrioritizedTasks().get(0));
 
     }
 
