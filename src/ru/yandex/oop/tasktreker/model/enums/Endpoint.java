@@ -1,0 +1,23 @@
+package ru.yandex.oop.tasktreker.model.enums;
+
+public enum Endpoint {
+    GET_TASK,
+    GET_EPICTASK,
+    GET_SUBTASK,
+    GET_TASKS,
+    GET_EPICTASKS,
+    GET_SUBTASKS,
+    GET_EPICTASK_SUBTASKS,
+    GET_HISTORY,
+    GET_PRIORITIZED,
+    POST_UPDATE_TASK,
+    POST_UPDATE_EPICTASK,
+    POST_UPDATE_SUBTASK,
+    DELETE_TASK,
+    DELETE_EPICTASK,
+    DELETE_SUBTASK,
+    DELETE_TASKS,
+    DELETE_EPICTASKS,
+    DELETE_SUBTASKS,
+    UNKNOWN
+}

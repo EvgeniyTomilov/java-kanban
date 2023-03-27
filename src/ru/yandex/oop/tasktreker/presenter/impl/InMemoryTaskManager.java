@@ -1,11 +1,10 @@
 package ru.yandex.oop.tasktreker.presenter.impl;
 
-import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.exception.TaskValidationException;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
-import ru.yandex.oop.tasktreker.model.TaskStartTimeComparator;
+
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
 import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
@@ -361,6 +360,15 @@ public class InMemoryTaskManager implements TaskManager {
             list.add(pair.getValue());
         }
         return list;
+    }
+
+    @Override
+    public List<SubTask> getEpicSubtasks(int epicId){
+        if (!epicTaskMap.get(epicId).getSubTasks().isEmpty()) {
+            return epicTaskMap.get(epicId).getSubTasks();
+        }
+        System.out.println("Список подзадач эпика №" + epicId + "пуст.");
+        return null;
     }
 
     @Override

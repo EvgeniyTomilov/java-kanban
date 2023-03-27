@@ -1,5 +1,6 @@
 package ru.yandex.oop.tasktreker.presenter.util;
 
+import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.HttpTaskManager;
 import ru.yandex.oop.tasktreker.presenter.HistoryManager;
 import ru.yandex.oop.tasktreker.presenter.TaskManager;
 import ru.yandex.oop.tasktreker.presenter.impl.FileBackedTasksManager;
@@ -12,7 +13,11 @@ public class Managers {
 
     private final static File file = new File("./file.csv");
 
-    public static InMemoryTaskManager getDefault() {
+    public static HttpTaskManager getDefault() {
+        return new HttpTaskManager("http://localhost:8078/");
+    }
+
+    public static InMemoryTaskManager getInMemory() {
         return new InMemoryTaskManager();
     }
 
