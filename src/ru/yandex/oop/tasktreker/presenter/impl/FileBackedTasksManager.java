@@ -237,6 +237,28 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return list;
     }
 
+    @Override
+    public String deleteTaskByID(int id){
+        String str = super.deleteTaskByID(id);
+        save();
+        return str;
+    }
+
+    @Override
+    public String deleteEpicTaskByID(int epicId) {
+        String str = super.deleteEpicTaskByID(epicId);
+        save();
+        return str;
+    }
+
+    @Override
+    public String deleteSubTaskByID(int id) {
+        String str = super.deleteSubTaskByID(id);
+        save();
+        return str;
+    }
+
+
     public static void main(String[] args) {
        TaskManager manager = loadFromFile(new File("resource\\file.csv"));
 //        TaskManager manager = new FileBackedTasksManager();

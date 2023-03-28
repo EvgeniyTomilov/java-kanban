@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> taskMap;
     private final Map<Integer, SubTask> subTaskMap;
     private final Map<Integer, EpicTask> epicTaskMap;
-    private final Set<Task> prioritizedTasks;
+    private Set<Task> prioritizedTasks;
     private int nextId;
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
@@ -65,6 +65,12 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         prioritizedTasks.add(task);
+    }
+
+    public void removeFromPrioritizedTree(Task task) {
+        ArrayList<Task> treeSet = new ArrayList<>(prioritizedTasks);
+        treeSet.remove(task);
+        prioritizedTasks = new TreeSet<>(treeSet);
     }
 
     @Override
@@ -252,7 +258,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<SubTask> getListSubtask(int id) {
+    public List<SubTask> getListSubTask(int id) {
         boolean containsId = epicTaskMap.containsKey(id);
         List<SubTask> subTasks;
         if (containsId) {
@@ -386,6 +392,51 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return totalDurationOfSubtasks;
     }
+
+    @Override
+    public String deleteTaskByID(int id) {
+        if (taskMap.get(id) != null){
+            removeFromPrioritizedTree(taskMap.get(id));
+            taskMap.remove(id);
+            historyManager.remove(id);
+            return "Задача №" + id + " удалена.";
+        }
+        return "Нельзя удалить задачу №" + id + ", так как ее нет.";
+    }
+
+    @Override
+    public String deleteEpicTaskByID(int epicId) {
+        if (epicTaskMap.get(epicId) != null) {
+            for (int i = 0; i < epicTaskMap.get(epicId).getSubTasks().size(); i++) {
+                subTaskMap.remove(epicTaskMap.get(epicId).getSubTasks().get(i).getId());
+            }
+            historyManager.remove(epicId);
+            epicTaskMap.remove(epicId);
+            return "Эпик №" + epicId + " удален.";
+
+        }
+        return "Нельзя удалить эпик №" + epicId + ", так как его нет.";
+    }
+
+    @Override
+    public String deleteSubTaskByID(int id) {
+        historyManager.remove(id);
+        if (subTaskMap.containsKey(id)) {
+            int epicID = subTaskMap.get(id).getEpicId();
+            for (int i = 0; i < epicTaskMap.get(epicID).getSubTasks().size(); i++) {
+                if (subTaskMap.get(id) == epicTaskMap.get(epicID).getSubTasks().get(i)) {
+                    epicTaskMap.get(epicID).getSubTasks().remove(i);
+                    epicTaskMap.get(epicID).getEpicStartTime();
+                    break;
+                }
+            }
+            removeFromPrioritizedTree(subTaskMap.get(id));
+            subTaskMap.remove(id);
+            return "Подзадача №" + id + " удалена.";
+        }
+        return "Нельзя удалить подзадачу №" + id + ", так как ее нет.";
+    }
+
 
 
     public Map<Integer, Task> getTaskMap() {

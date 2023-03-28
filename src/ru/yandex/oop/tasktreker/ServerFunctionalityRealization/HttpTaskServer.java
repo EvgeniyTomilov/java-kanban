@@ -11,6 +11,8 @@ import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.Endpoint;
+import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
+import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 
 import java.io.IOException;
@@ -18,7 +20,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static ru.yandex.oop.tasktreker.model.enums.TaskType.*;
 
 public class HttpTaskServer {
     private final HttpServer server;
@@ -297,14 +303,14 @@ public class HttpTaskServer {
             String body = new String(exchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
             try {
                 JsonElement jsonElement = JsonParser.parseString(body);
-                EpicTask newEpic = deserializeEpic(jsonElement);
-                if (newEpic.getId() != 0 && manager.getAnyTask(newEpic.getId()) != null) {
-                    manager.updateTask(newEpic.getId(), );
-                    writeResponse(exchange, "Эпик " + newEpic.getId() + " обновлен", 201);
+                EpicTask newEpicTask = deserializeEpic(jsonElement);
+                if (newEpicTask.getId() != 0 && manager.getAnyTask(newEpicTask.getId()) != null) {
+                    manager.updateTask(newEpicTask.getId(), newEpicTask, manager);//??
+                    writeResponse(exchange, "Эпик " + newEpicTask.getId() + " обновлен", 201);
                     return;
-                } else if (newEpic.getId() == 0){
-                    manager.saveEpic(newEpic);
-                    writeResponse(exchange, "Эпик " + newEpic.getId() + " сохранен", 201);
+                } else if (newEpicTask.getId() == 0){
+                    manager.createTaskAndReturnId(newEpicTask);
+                    writeResponse(exchange, "Эпик " + newEpicTask.getId() + " сохранен", 201);
                     return;
                 }
                 writeResponse(exchange,
@@ -319,13 +325,13 @@ public class HttpTaskServer {
             String body = new String(exchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
             try {
                 JsonElement jsonElement = JsonParser.parseString(body);
-                Subtask newSubtask = deserializeSubtask(jsonElement);
-                if (newSubtask.getId() != 0 && manager.getSubtaskByID(newSubtask.getId()) != null) {
-                    manager.updateSubtask(newSubtask);
+                SubTask newSubtask = deserializeSubtask(jsonElement);
+                if (newSubtask.getId() != 0 && manager.getAnyTask(newSubtask.getId()) != null) {
+                    manager.updateTask(newSubtask.getId(), newSubtask, manager);//????
                     writeResponse(exchange, "Подзадача " + newSubtask.getId() + " обновлена", 201);
                     return;
                 } else if (newSubtask.getId() == 0) {
-                    int id = manager.saveSubtask(newSubtask);
+                    int id = manager.createTaskAndReturnId(newSubtask);
                     writeResponse(exchange, "Подзадача " + id + " сохранена", 201);
                     return;
                 }
@@ -344,7 +350,7 @@ public class HttpTaskServer {
                 return;
             }
             int id = optionalInteger.get();
-            writeResponse(exchange, gson.toJson(manager.removeTaskByID(id)), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteTaskByID(id)), 200);
         }
 
         private void handleDeleteEpic(HttpExchange exchange) throws IOException {
@@ -354,7 +360,7 @@ public class HttpTaskServer {
                 return;
             }
             int id = optionalInteger.get();
-            writeResponse(exchange, gson.toJson(manager.removeEpicByID(id)), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteEpicTaskByID(id)), 200);
         }
 
         private void handleDeleteSubtask(HttpExchange exchange) throws IOException {
@@ -364,19 +370,19 @@ public class HttpTaskServer {
                 return;
             }
             int id = optionalInteger.get();
-            writeResponse(exchange, gson.toJson(manager.removeSubtaskByID(id)), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteSubTaskByID(id)), 200);
         }
 
         private void handleDeleteTasks(HttpExchange exchange) throws IOException {
-            writeResponse(exchange, gson.toJson(manager.deleteAllTasks()), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteTasksByType(TASK)), 200);
         }
 
         private void handleDeleteEpics(HttpExchange exchange) throws IOException {
-            writeResponse(exchange, gson.toJson(manager.deleteAllEpics()), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteTasksByType(EPICTASK)), 200);
         }
 
         private void handleDeleteSubtasks(HttpExchange exchange) throws IOException {
-            writeResponse(exchange, gson.toJson(manager.deleteAllSubtasks()), 200);
+            writeResponse(exchange, gson.toJson(manager.deleteTasksByType(SUBTASK)), 200);
         }
 
         private Task deserializeTask(JsonElement jsonElement){
@@ -384,37 +390,34 @@ public class HttpTaskServer {
             int id = jsonObject.get("Id").getAsInt();
             String name = jsonObject.get("Name").getAsString();
             String description = jsonObject.get("Description").getAsString();
-            long duration = jsonObject.get("Duration").getAsLong();
-            String startTime = jsonObject.get("StartTime").getAsString();
-            Task task = new Task(name, description,
-                    Status.valueOf(jsonObject.get("Status").getAsString()), duration, startTime);
+            Duration duration = Duration.ofMinutes(jsonObject.get("Duration").getAsLong());
+            LocalDateTime startTime = LocalDateTime.parse(jsonObject.get("StartTime").getAsString());
+            Task task = new Task(name, description, duration, startTime);
             task.setId(id);
             return task;
         }
 
-        private Subtask deserializeSubtask(JsonElement jsonElement){
+        private SubTask deserializeSubtask(JsonElement jsonElement){
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             int id = jsonObject.get("Id").getAsInt();
             String name = jsonObject.get("Name").getAsString();
             String description = jsonObject.get("Description").getAsString();
             int epicId = jsonObject.get("EpicId").getAsInt();
-            long duration = jsonObject.get("Duration").getAsLong();
+            Duration duration = Duration.ofMinutes(jsonObject.get("Duration").getAsLong());
             String startTime = jsonObject.get("StartTime").getAsString();
-            Subtask subtask = new Subtask(name, description,
-                    Status.valueOf(jsonObject.get("Status").getAsString()), epicId, duration, startTime);
-            subtask.setId(id);
-            return subtask;
+            SubTask subTask = new SubTask(name, description, epicId, duration, startTime);
+            subTask.setId(id);
+            return subTask;
         }
 
-        private Epic deserializeEpic(JsonElement jsonElement){
+        private EpicTask deserializeEpic(JsonElement jsonElement){
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             int id = jsonObject.get("Id").getAsInt();
             String name = jsonObject.get("Name").getAsString();
             String description = jsonObject.get("Description").getAsString();
-            Epic epic = new Epic(name, description,
-                    Status.valueOf(jsonObject.get("Status").getAsString()));
-            epic.setId(id);
-            return epic;
+            EpicTask epicTask = new EpicTask(name, description);
+            epicTask.setId(id);
+            return epicTask;
         }
     }
 }

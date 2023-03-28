@@ -14,6 +14,12 @@ import java.util.TreeSet;
 
 public interface TaskManager {
 
+    String deleteTaskByID(int id);
+
+    String deleteEpicTaskByID(int epicId);
+
+    String deleteSubTaskByID(int id);
+
     Map<Integer, Task> getTaskMap();
 
     Map<Integer, SubTask> getSubTaskMap();
@@ -34,7 +40,7 @@ public interface TaskManager {
 
     boolean deleteByIdAndTypeTask(Integer id, TaskType taskType);
 
-    List<SubTask> getListSubtask(int id);
+    List<SubTask> getListSubTask(int id);
 
     void changeStatus(int epicId);
 
