@@ -23,7 +23,7 @@ public class EpicTaskSerializer implements JsonSerializer<EpicTask> {
             case IN_PROGRESS -> result.addProperty("Status", "IN_PROGRESS");
             case DONE -> result.addProperty("Status", "DONE");
         }
-        result.addProperty("Duration", epicTask.getDuration().toMinutes());//???
+        result.addProperty("Duration", epicTask.getDuration().toMinutes());
         return result;
     }
 }
