@@ -1,4 +1,4 @@
-package ru.yandex.oop.tasktreker.ServerFunctionalityRealization.CustomJson;
+package ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,7 +1,7 @@
-package ru.yandex.oop.tasktreker.ServerFunctionalityRealization.CustomJson;
+package ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson;
 
 import com.google.gson.*;
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.HttpTaskManager;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.HttpTaskManager;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;

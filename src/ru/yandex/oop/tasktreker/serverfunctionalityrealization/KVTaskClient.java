@@ -1,4 +1,4 @@
-package ru.yandex.oop.tasktreker.ServerFunctionalityRealization;
+package ru.yandex.oop.tasktreker.serverfunctionalityrealization;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,6 +27,7 @@ public class KVTaskClient {
             if (response.statusCode() == 200) {
                 JsonElement jsonElement = JsonParser.parseString(response.body());
                 this.apiToken = jsonElement.getAsString();
+                System.out.println("Регистрация ключа прошла успешно!");
             } else {
                 System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
             }
@@ -59,18 +60,18 @@ public class KVTaskClient {
             final HttpResponse<String> response = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 JsonElement jsonElement = JsonParser.parseString(response.body());
-                JsonObject jObj = jsonElement.getAsJsonObject();
-                String toString = String.join("@",
-                        jObj.get("User key").getAsString(),
-                        jObj.get("TaskId").getAsString(),
-                        jObj.get("EpicId").getAsString(),
-                        jObj.get("SubtaskId").getAsString(),
-                        jObj.get("Tasks").getAsString(),
-                        jObj.get("Epics").getAsString(),
-                        jObj.get("Subtasks").getAsString(),
-                        jObj.get("History").getAsString());
+//                JsonObject jObj = jsonElement.getAsJsonObject();
+//                String toString = String.join("@",
+//                        jObj.get("User key").getAsString(),
+//                        jObj.get("TaskId").getAsString(),
+//                        jObj.get("EpicId").getAsString(),
+//                        jObj.get("SubtaskId").getAsString(),
+//                        jObj.get("Tasks").getAsString(),
+//                        jObj.get("Epics").getAsString(),
+//                        jObj.get("Subtasks").getAsString(),
+//                        jObj.get("History").getAsString());
                 System.out.println("Данные успешно выгружены с сервера");
-                return toString;
+                return jsonElement.toString();
             } else {
                 System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
             }

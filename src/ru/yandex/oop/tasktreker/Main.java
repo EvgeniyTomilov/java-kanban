@@ -1,14 +1,11 @@
 package ru.yandex.oop.tasktreker;
 
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.HttpTaskManager;
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.KVServer;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.HttpTaskManager;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.KVServer;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
-import ru.yandex.oop.tasktreker.presenter.HistoryManager;
-import ru.yandex.oop.tasktreker.presenter.TaskManager;
-import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 import ru.yandex.oop.tasktreker.presenter.util.Managers;
 
 import java.io.IOException;
@@ -44,7 +41,7 @@ public class Main {
         System.out.println("Ключ");
         System.out.println(newHttpTaskManager.getKey());
         System.out.println("История");
-       System.out.println(newHttpTaskManager.getHistoryManager());
+        System.out.println(newHttpTaskManager.getHistoryManager());
         System.out.println("Все таски");
         System.out.println(newHttpTaskManager.getAllTasks());
 

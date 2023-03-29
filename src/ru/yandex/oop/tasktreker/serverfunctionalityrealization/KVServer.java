@@ -1,4 +1,4 @@
-package ru.yandex.oop.tasktreker.ServerFunctionalityRealization;
+package ru.yandex.oop.tasktreker.serverfunctionalityrealization;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

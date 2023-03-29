@@ -150,7 +150,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return task;
     }
 
-    private static String historyToString(HistoryManager manager) {
+     protected static String historyToString(HistoryManager manager) {
         StringBuilder stringBuilder = new StringBuilder();// создали стрингбилдер
         List<Task> tasks = manager.getHistory();// создали лист тасок из истории
         if (tasks.size() > 1) {

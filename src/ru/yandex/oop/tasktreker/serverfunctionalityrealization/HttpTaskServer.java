@@ -1,18 +1,16 @@
-package ru.yandex.oop.tasktreker.ServerFunctionalityRealization;
+package ru.yandex.oop.tasktreker.serverfunctionalityrealization;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.CustomJson.EpicTaskSerializer;
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.CustomJson.SubTaskSerializer;
-import ru.yandex.oop.tasktreker.ServerFunctionalityRealization.CustomJson.TaskSerializer;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson.EpicTaskSerializer;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson.SubTaskSerializer;
+import ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson.TaskSerializer;
 import ru.yandex.oop.tasktreker.model.EpicTask;
 import ru.yandex.oop.tasktreker.model.SubTask;
 import ru.yandex.oop.tasktreker.model.Task;
 import ru.yandex.oop.tasktreker.model.enums.Endpoint;
-import ru.yandex.oop.tasktreker.model.enums.TaskStatus;
-import ru.yandex.oop.tasktreker.model.enums.TaskType;
 import ru.yandex.oop.tasktreker.presenter.impl.InMemoryTaskManager;
 
 import java.io.IOException;
