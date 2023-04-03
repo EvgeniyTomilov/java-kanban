@@ -32,12 +32,8 @@ public class HttpTaskServer {
 
         server.bind(new InetSocketAddress(PORT), 0);
 
-        // TODO test and remove these; and do we need a save context?
-//        server.createContext("/tasks/task/", new taskManagerHandler());
-
         server.createContext("/tasks", new ru.yandex.oop.tasktreker.serverfunctionalityrealization.TaskManagerHandler(manager));
-//        server.createContext("/tasks/task", new taskManagerHandler());
-//        server.createContext("/tasks/subtask/", new taskManagerHandler());
+
         gson = new GsonBuilder().
                 registerTypeAdapter(Task.class, new TaskSerializer()).
                 registerTypeAdapter(EpicTask.class, new EpicTaskSerializer()).

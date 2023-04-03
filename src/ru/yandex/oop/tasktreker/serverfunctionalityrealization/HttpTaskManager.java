@@ -34,39 +34,18 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     @Override
-    public void save() {   // сохранять состояние менеджера в строку или в json
-        // и отправлять на сервер.
-        // TODO remove this block
-//        Writer writer = new StringWriter();
+    public void save() {
+
         Map<Integer, Task> taskMap = new HashMap<>();
         for (Task value :  getTaskMap().values()) taskMap.put(value.getId(), value);
         for (EpicTask value : getEpicTaskMap().values()) taskMap.put(value.getId(), value);
         for (SubTask value : getSubTaskMap().values()) taskMap.put(value.getId(), value);
 
-        // TODO remove this block
-//        try (BufferedWriter bw = new BufferedWriter(writer) ) {  //OUT
-//            bw.write("id,type,name,status,description,startTime,duration,epic");
-//            bw.newLine();
-//            for (Task value : taskMap.values()) {
-//                bw.write(toString(value));
-//                bw.newLine();
-//            }
-//            bw.newLine();
-//            bw.write(historyToString(getHistoryManager()));
-//
-//
-//        } catch (IOException exception) {
-//            throw new ManagerSaveException("Во время записи данных менеджера в строку произошла ошибка!", exception);
-//        }
-//        String stringForSave = writer.toString();
+
         kvTaskClient.put(key, gson.toJson(taskMap));
     }
 
 
-//    @Override
-//    public void save() {
-//        kvTaskClient.put(key, gson.toJson(this));
-//    }
 
 
 
@@ -127,103 +106,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
         return newHttpTaskManager;
     }
 
-
-
-
-
-
-
-//    public HttpTaskManager loadFromServer() {
-//        HttpTaskManager newHttpTaskManager = Managers.getDefault();
-//        String response = kvTaskClient.load(key);
-//        if (response != null) {
-//            String[] split = response.split("@");
-//            newHttpTaskManager.setKey(split[0]);
-//            newHttpTaskManager.setNextId(Integer.parseInt(split[1]));
-//            newHttpTaskManager.setNextId(Integer.parseInt(split[2]));
-//            newHttpTaskManager.setNextId(Integer.parseInt(split[3]));
-//            if (!split[4].equals("null")) {
-//                saveTaskFromServer(split[4], newHttpTaskManager);
-//            }
-//            if (!split[5].equals("null")) {
-//                saveTaskFromServer(split[5], newHttpTaskManager);
-//            }
-//            if (!split[6].equals("null")) {
-//                saveTaskFromServer(split[6], newHttpTaskManager);
-//            }
-//            if (!split[7].equals("null")) {
-//                saveHistoryFromServer(split[7], newHttpTaskManager);
-//            }
-//        }
-//        return newHttpTaskManager;
-//    }
-//    @Override
-//    public String toString(Task task) {
-//        if (task instanceof SubTask) {
-//            return task.getId() + "/" + task.getTaskType() + "/" + task.getName() + "/" + task.getStatus() + "/"
-//                    + task.getDescription() + "/" + task.getStartTime() + "/" + task.getDuration() + "/" + ((SubTask) task).getEpicId();
-//        } else {
-//            return task.getId() + "/" + task.getTaskType() + "/" + task.getName() + "/" + task.getStatus() + "/"
-//                    + task.getDescription() + "/" + task.getStartTime() + "/" + task.getDuration();
-//        }
-//    }
-//
-//    public Task taskFromString(String str) { // заменить String stringFromServer = gson.fromJson(response, String.class);
-//        String[] element = str.split("/");// разбили строку по запятой
-//        int id = Integer.parseInt(element[0]);//создали поле айди через парсинт
-//        TaskType taskType = TaskType.valueOf(element[1]); //создали поле тасктайп
-//        String name = element[2];
-//        TaskStatus taskStatus = TaskStatus.valueOf(element[3]);
-//        String desc = element[4];
-//        Task task = null;
-//
-//        if (element.length == 8) { // если количество элементов = 8, то это сабтаск
-//            int idEpic = Integer.parseInt(element[7]); // создали доп поле эпикайди через парсинт
-//            task = new SubTask(name, desc, idEpic, Duration.parse(element[6]), element[5]); // создали новую сабтаску
-//            task.setStatus(taskStatus); // присвоили статус новой сабтаске
-//            task.setId(id); // установили айди сабтаске
-//        } else {
-//            if (taskType == TaskType.TASK) { // если поле таски таска, то это таска
-//                task = new Task(name, id, desc, taskStatus, Duration.parse(element[6]), LocalDateTime.parse(element[5])); // создали новую таску
-//            } else { // иначе это эпиктаск
-//                task = new EpicTask(name, desc);// создали новый эпик таск
-//                task.setId(id);// присвоили айди
-//            }
-//        }
-//        return task;
-//    }
-//
-//    public void saveTaskFromServer(String stringToSplit, HttpTaskManager manager) {
-//        String[] tasksSplit = stringToSplit.split(",");
-//        for (int i = 0; i < tasksSplit.length; i++) {
-//            String substring;
-//            if (tasksSplit.length == 1) {
-//                substring = tasksSplit[i].substring(2, tasksSplit[i].length() - 2);
-//            } else if (i == 0) {
-//                substring = tasksSplit[i].substring(2, tasksSplit[i].length() - 1);
-//            } else if (i == tasksSplit.length - 1) {
-//                substring = tasksSplit[i].substring(1, tasksSplit[i].length() - 2);
-//            }  else {
-//                substring = tasksSplit[i].substring(1, tasksSplit[i].length() - 1);
-//            }
-//            switch (taskFromString(substring).getTaskType()) {
-//                case TASK -> manager.createTaskAndReturnId(taskFromString(substring));
-//                case EPICTASK -> manager.createTaskAndReturnId((EpicTask) taskFromString(substring));
-//                case SUBTASK -> manager.createTaskAndReturnId((SubTask) taskFromString(substring));
-//            }
-//        }
-//    }
-//
-//    public void saveHistoryFromServer(String stringToSplit, HttpTaskManager manager) {
-//        String[] historySplit = stringToSplit.split(",");
-//        for (String s : historySplit) {
-//            if (s != null) {
-//                manager.getHistoryManager().add(manager.getAnyTask(Integer.parseInt(s)));
-//                manager.getHistoryManager().add(manager.getAnyTask(Integer.parseInt(s)));
-//                manager.getHistoryManager().add(manager.getAnyTask(Integer.parseInt(s)));
-//            }
-//        }
-//    }
 
     public String getKey() {
         return key;
