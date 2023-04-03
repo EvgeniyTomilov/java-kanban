@@ -2,6 +2,7 @@ package ru.yandex.oop.tasktreker.serverfunctionalityrealization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import ru.yandex.oop.tasktreker.exception.ManagerSaveException;
 import ru.yandex.oop.tasktreker.serverfunctionalityrealization.customjson.HttpTaskManagerSerializer;
 import ru.yandex.oop.tasktreker.model.EpicTask;
@@ -33,31 +34,32 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     @Override
-    public void save() throws ManagerSaveException {   // сохранять состояние менеджера в строку или в json
+    public void save() {   // сохранять состояние менеджера в строку или в json
         // и отправлять на сервер.
-        Writer writer = new StringWriter();
-        Map<Integer, Task> tmpStorage = new HashMap<>();
-        for (Task value :  getTaskMap().values()) tmpStorage.put(value.getId(), value);
-        for (EpicTask value : getEpicTaskMap().values()) tmpStorage.put(value.getId(), value);
-        for (SubTask value : getSubTaskMap().values()) tmpStorage.put(value.getId(), value);
+        // TODO remove this block
+//        Writer writer = new StringWriter();
+        Map<Integer, Task> taskMap = new HashMap<>();
+        for (Task value :  getTaskMap().values()) taskMap.put(value.getId(), value);
+        for (EpicTask value : getEpicTaskMap().values()) taskMap.put(value.getId(), value);
+        for (SubTask value : getSubTaskMap().values()) taskMap.put(value.getId(), value);
 
-
-        try (BufferedWriter bw = new BufferedWriter(writer) ) {  //OUT
-            bw.write("id,type,name,status,description,startTime,duration,epic");
-            bw.newLine();
-            for (Task value : tmpStorage.values()) {
-                bw.write(toString(value));
-                bw.newLine();
-            }
-            bw.newLine();
-            bw.write(historyToString(getHistoryManager()));
-
-
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Во время записи данных менеджера в строку произошла ошибка!", exception);
-        }
-        String stringForSave = writer.toString();
-        kvTaskClient.put(key, gson.toJson(stringForSave));
+        // TODO remove this block
+//        try (BufferedWriter bw = new BufferedWriter(writer) ) {  //OUT
+//            bw.write("id,type,name,status,description,startTime,duration,epic");
+//            bw.newLine();
+//            for (Task value : taskMap.values()) {
+//                bw.write(toString(value));
+//                bw.newLine();
+//            }
+//            bw.newLine();
+//            bw.write(historyToString(getHistoryManager()));
+//
+//
+//        } catch (IOException exception) {
+//            throw new ManagerSaveException("Во время записи данных менеджера в строку произошла ошибка!", exception);
+//        }
+//        String stringForSave = writer.toString();
+        kvTaskClient.put(key, gson.toJson(taskMap));
     }
 
 
