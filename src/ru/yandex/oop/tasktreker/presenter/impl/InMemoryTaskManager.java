@@ -238,6 +238,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int createTaskAndReturnId(Task task) {
         int keyId = getNextId();
+        System.out.println("keyId is " + keyId);
         task.setId(keyId);
         if (task instanceof SubTask) {
             this.subTaskMap.put(keyId, (SubTask) task);
@@ -326,6 +327,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int getNextId() {
+        System.out.println("nextId in getter is " + nextId);
         return nextId++;
     }
 
@@ -424,12 +426,14 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTaskMap.containsKey(id)) {
             int epicID = subTaskMap.get(id).getEpicId();
             for (int i = 0; i < epicTaskMap.get(epicID).getSubTasks().size(); i++) {
+                System.out.println(subTaskMap.get(id) == epicTaskMap.get(epicID).getSubTasks().get(i));
                 if (subTaskMap.get(id) == epicTaskMap.get(epicID).getSubTasks().get(i)) {
                     epicTaskMap.get(epicID).getSubTasks().remove(i);
-                    epicTaskMap.get(epicID).getEpicStartTime();
+//                    epicTaskMap.get(epicID).getEpicStartTime();
                     break;
                 }
             }
+            System.out.println("passed delete if");
             removeFromPrioritizedTree(subTaskMap.get(id));
             subTaskMap.remove(id);
             return "Подзадача №" + id + " удалена.";

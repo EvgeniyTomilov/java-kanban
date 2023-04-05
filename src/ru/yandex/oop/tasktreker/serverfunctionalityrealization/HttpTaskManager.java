@@ -46,9 +46,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
 
-
-
-
     public HttpTaskManager loadFromServer() {
         HttpTaskManager newHttpTaskManager = Managers.getDefault();
         String response = kvTaskClient.load(key);

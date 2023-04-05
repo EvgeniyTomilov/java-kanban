@@ -38,7 +38,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description", Duration.ofMinutes(10), LocalDateTime.parse("2007-12-03T10:45:30"));
 
         assertThrows(TaskValidationException.class, () -> manager.createTaskAndReturnId(task3));
-//        assertEquals(0, manager.createTaskAndReturnId(task3));
+
     }
 
     @Test
@@ -49,10 +49,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.createTaskAndReturnId(task2);
         Task task3 = new Task("Test addNewTask3", "Test addNewTask3 description", Duration.ofMinutes(10), null);
         manager.createTaskAndReturnId(task3);
-//        Task[] prioritizedTasks = new Task[3];
-//        prioritizedTasks[0] = task2;
-//        prioritizedTasks[1] = task;
-//        prioritizedTasks[2] = task3;
+
 
         assertEquals(task2,manager.getPrioritizedTasks().get(0));
 

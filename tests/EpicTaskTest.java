@@ -27,7 +27,7 @@ class EpicTaskTest {
         assertEquals(TaskStatus.NEW, epicTask1.getStatus());
     }
 
-    //    SubTask subTask1 = new SubTask("Деньги", "Накопить бабло", epicTask1.getId(), Duration.ofMinutes(110L), "2007-12-03T10:15:30");
+
     @Test
     public void addNewEpicTaskWithNewSubTask() { //Все подзадачи со статусом NEW
         SubTask subTask1 = new SubTask("subTask1 epicTask", "description test subTask1", epicTask1.getId(), Duration.ofMinutes(10), "2023-01-15T10:15:30");

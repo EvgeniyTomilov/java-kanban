@@ -64,6 +64,8 @@ public class HttpServerTest {
         task = new Task("Test addNewTask1", "Test addNewTask description1", Duration.ofMinutes(10), LocalDateTime.parse("2023-03-03T10:15:30"));
         taskId = manager.createTaskAndReturnId(task);
         task2 = new Task("Test addNewTask2", "Test addNewTask description2", Duration.ofMinutes(15), LocalDateTime.parse("2023-04-03T10:15:30"));
+        task2.setDuration(Duration.ofMinutes(60));
+        /*task2.setStartTime("");*/
         epic = new EpicTask("Test addNewEpicTask1", "Test addNewEpicTask1 description");
         epicId = manager.createTaskAndReturnId(epic);
         epic2 = new EpicTask("Test addNewEpicTask2", "Test addNewEpicTask2 description");
@@ -191,18 +193,20 @@ public class HttpServerTest {
     public void postEpic() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:6080/tasks/epic/");
+        epic2.setDuration(Duration.ofMinutes(60));
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic2))).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(201, response.statusCode());
         System.out.println(response.body());
-        assertEquals("Эпик 2 сохранен", response.body());
+        assertEquals("Эпик 4 сохранен", response.body());
         assertNotNull(manager.getAnyTask(2));
     }
-  @Test
+    @Test
     public void postUpdateEpic() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:6080/tasks/epic/");
         epic2.setId(epicId); //Ставим ID на тот, который есть, чтобы было обновление
+        epic2.setDuration(Duration.ofMinutes(60));
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(gson.toJson(epic2))).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(201, response.statusCode());
@@ -293,3 +297,4 @@ public class HttpServerTest {
         assertEquals("Такого эндпоинта не существует", response.body());
     }
 }
+

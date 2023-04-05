@@ -60,16 +60,7 @@ public class KVTaskClient {
             final HttpResponse<String> response = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
                 JsonElement jsonElement = JsonParser.parseString(response.body());
-//                JsonObject jObj = jsonElement.getAsJsonObject();
-//                String toString = String.join("@",
-//                        jObj.get("User key").getAsString(),
-//                        jObj.get("TaskId").getAsString(),
-//                        jObj.get("EpicId").getAsString(),
-//                        jObj.get("SubtaskId").getAsString(),
-//                        jObj.get("Tasks").getAsString(),
-//                        jObj.get("Epics").getAsString(),
-//                        jObj.get("Subtasks").getAsString(),
-//                        jObj.get("History").getAsString());
+
                 System.out.println("Данные успешно выгружены с сервера");
                 return jsonElement.toString();
             } else {
