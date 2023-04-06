@@ -13,8 +13,8 @@ public class Task implements Comparable<Task> {
     protected String description;
     protected TaskStatus taskStatus;
     protected TaskType taskType;
-    protected Duration duration;
-    protected LocalDateTime startTime;
+    protected  transient Duration duration;
+    protected  transient LocalDateTime startTime;
 
     public Task() {
     }
